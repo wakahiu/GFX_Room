@@ -1,0 +1,33 @@
+Peter Wakahiu Njenga
+pwn2107
+
+RUN 
+Type "make" IN Projects/src directory
+
+THE MODEL
+This project models a furnitureless room with basic objects in it. There is a Rukic's cube and two spheres bouncing off the walls ans floors. Additionally, the Rubiks cube can be made to rotate along an arbitary axis.
+
+TEXTURES
+The model relies heavlily on textures to create the illution of brick walls, Wooden floors, Cellings, carpet and pictures. The texture data is read in from 3-channel bitmap images and tilled on the objects. To read the images, I followed followed the tutorial on http://www.cplusplus.com/articles/GwvU7k9E/. Reading bitmap Images involves reading file, information headers and image data from the color planes. This information is strored in a 3 channel arrays. Bitmap images with 4 (+alpha) channels are not supported in this particular implementation.
+
+ANIMATIONS
+The main animations are rotations about an arbitrary axis and translations. Physic's effects are implemented to prevent the objectes from flying through the walls of the room. Objects bounce by simply performing traslations with bounds checks enabled. No physics effects are implemented to make the objects bounce off each other. 
+
+
+USER INTERACTION
+Animations, motion and screen capture are enabled by pressing/toggling the folllowing keys.
+
+	esc	= Exit
+	b	= (toggle) Objects bounce off the walls, floor and celing.
+  	l	= Rotate objectes around an arbitrary axis. 
+   	r	= (toggle) Screen capture.
+   	w	= Move Forward
+	s	= Move Backward
+	d	= Move right
+	a	= Move left
+	
+No Mouse interation was implemented for this project.
+	
+FUTURE WORK/CHALLENGES ENCOUNTERED.
+Ideally, I would like to import 3d models from modelling software such as Autocad, Maya or blender. Rending objects by manualy specifying their vertices is a hugly cumbersome task that does not scale well. I encountered difficulties reading 3d models into the programs and eventually specified the coordinates of each object manually. Athough I am awere of the libaries out there such as assimp, rendering the objects proved cumbersome. This leaves rooms for imprevement and In the future I would like to be able to import 3d models.
+	

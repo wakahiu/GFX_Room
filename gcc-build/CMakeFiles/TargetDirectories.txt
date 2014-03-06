@@ -1,0 +1,1 @@
+/home/wakahiu/Documents/Graphics/pa1_starter/gcc-build/CMakeFiles/pa1.dir
