@@ -1,0 +1,40 @@
+#include "common_header.h"
+
+/*
+* Bone structure. Each bone contains a position, length and angle
+*/
+class Bone{
+
+private:
+		string name;
+	//Bone positions
+	 float x;
+	 float y;
+	 float z;
+	 
+	 //Bone angles aplha=x, beta=y, gamma=z
+	 float alpha;
+	 float beta;
+	 float gamma;
+	 
+	 //Length
+	 float length;
+	 
+	 //Children
+	 vector<Bone> children;
+	 //Only one parent
+	 Bone * parent;
+
+public:
+	//Create a new bone and attached it to parent.
+	Bone(Bone &parent,string name, float x, float y, float z, float alpha, float beta, float gamma, float length );
+	//Takes a bone and adds a child. If it doesn't exist, it creates a childless 
+	//bone;
+	//Bone(Bone prnt);
+	//Takes a bone and prints to std out the heirarchy
+	void printHeirarchy(void);
+	//Load a bone heirarchy structure from file
+	void loadStructure(string pathToFile); 
+	void draw(void);
+			
+};

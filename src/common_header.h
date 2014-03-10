@@ -8,11 +8,12 @@
 #include <assert.h>
 #include <fstream>      // std::ifstream
 #include <math.h>
+#include <vector>
 
 using namespace std;
 
-#ifndef GL_GET_ERROR
-#define GL_GET_ERROR
+#ifndef	COMMON_HEADER
+#define COMMON_HEADER
 #define printOpenGLError() __printOpenGLError(__FILE__, __LINE__)
 
 static void __printOpenGLError(string file, int line){

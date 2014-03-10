@@ -541,7 +541,7 @@ void displayRoom( GLuint * texture){
 	   glNormal3f(0.0,1.0,0.0);	glTexCoord2f(x/s, 0.0); 	glVertex3f(x, y+0.01, -z);
    	glEnd();
    
-   	displayBookShelf(5.0, ROOMHEIGHT*3/2, 3.0, &texture[7]);
+   	//displayBookShelf(5.0, ROOMHEIGHT*3/2, 3.0, &texture[7]);
    	
    	glBindTexture(GL_TEXTURE_2D, wall);
    	glPopMatrix();
@@ -554,25 +554,19 @@ void displayBookShelf(float d, float h, float w, GLuint *textures){
 	float d2 = d/2;
 	float h2 = h/2;
 	float w2 = w/2;
-	int NumOBJ = 5;
 	
 	//glBindTexture(GL_TEXTURE_2D, wood);
 	float vdata[12][3] = {	
 	{-w2, -h2,-d2}, {-w2, -h2, d2}, {-w2, h2,-d2}, {-w2, h2,d2},
 	{w2, -h2,-d2}, {w2, -h2, d2}, {w2, h2,-d2}, {w2, h2,d2} };
 	
-	int vindices[NumOBJ][4] = { 	
+	int vindices[5][4] = { 	
 	{0,1,3,2}, {4,5,7,6}, {0,1,5,4}, {2,3,7,6},{0,4,6,2}  };
 	
 	/*
 	int normals[][] ={
 	*/
 	float s = 1.0;
-	int tCoords[NumOBJ][2] = {
-	{0.0,0.0}, {0.0,d/s}, {h/s,d/s}, {h/s,0.0} }
-	
-	int tindices[NumOBJ][4] = { 	
-	{0,1,2,3}, {4,5,7,6}, {0,1,5,4}, {2,3,7,6},{0,4,6,2}  };
 	
 
 	glBegin(GL_QUADS);{  

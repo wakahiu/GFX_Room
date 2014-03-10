@@ -6,6 +6,7 @@
 #include "GLScreenCapturer.h"
 #include "trackball.h"
 #include "display.h"
+#include "bone.hpp"
 
 //#elif defined(__linux)
 #if defined(__APPLE__) || defined(MACOSX)
@@ -127,9 +128,11 @@ void init(void)
 	//Generate the Roomdisplay list
 	theRoom = glGenLists(2);
 	glNewList(theRoom, GL_COMPILE);
-		displayRoom(roomTextures);
+	displayRoom(roomTextures);
+	
 	glEndList();
    
+   	Bone skeleton;// = loadMesh("../models/");
 }
 
 
@@ -140,7 +143,7 @@ void display(void)
    	// Reset transformations
 	glLoadIdentity();
 	// Set the camera
-	gluLookAt( PosX, sphereY, sphereZ,
+	gluLookAt( PosX, PosY, PosZ,
 				0, 0,  0,
 				0.0f, 1.0f,  0.0f);
 	
