@@ -3,13 +3,14 @@
 #include <iostream>
 #include <string>
 #include <math.h>
-#include <stdlib.h>		//Rand
+#include <stdlib.h>		//Rand malloc
 #include <time.h>
 #include <assert.h>
 #include <fstream>      // std::ifstream
 #include <math.h>
 #include <vector>
 #include <list>
+#include <utility>		//Pair
 
 using namespace std;
 

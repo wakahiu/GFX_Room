@@ -9,6 +9,9 @@
 #include <fstream>      // std::ifstream
 #include <math.h>
 #include <vector>
+#include <list>
+#include <utility>		//Pair
+#include <stdlib.h>
 
 using namespace std;
 

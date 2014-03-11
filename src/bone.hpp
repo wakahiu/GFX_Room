@@ -22,9 +22,10 @@ private:
 	 
 	 //Length
 	 float length;
+	 struct boneNode * childList;
 	 
 	 //Children
-	 vector<Bone> children;
+	 list<Bone> children;
 	 //Only one parent
 	 Bone * parent;
 	 Bone * root;
@@ -36,14 +37,17 @@ public:
 	Bone(const Bone &other);
 	//Takes a bone and adds a child. If it doesn't exist, it creates a childless 
 	//bone;
-	//Bone(Bone prnt);
 	//Takes a bone and prints to std out the heirarchy
-	Bone * printHeirarchyUp(void);
-	void printHeirarchy(void);
+	void printHeirarchy(int rank);
 	void draw(void);
 	int	size(void);
 	void addChild(const Bone child);
 			
+};
+
+struct boneNode{
+	Bone* bone;
+	boneNode* next;
 };
 
 #endif

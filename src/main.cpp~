@@ -135,8 +135,8 @@ void init(void)
 	
 	glEndList();
    
-   	arm = createPerson();
-   	//arm.printHeirarchy();
+   	createPerson(arm);
+   	arm.printHeirarchy(1);
 }
 
 
@@ -152,7 +152,7 @@ void display(void)
 				0.0f, 1.0f,  0.0f);
 	
 	glPushMatrix();
-	//arm.draw();
+	arm.draw();
 	/*
    //Turn on Texturing
    glEnable(GL_TEXTURE_2D);
