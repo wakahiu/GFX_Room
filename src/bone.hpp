@@ -29,7 +29,7 @@ private:
 	 //Only one parent
 	 Bone * parent;
 	 Bone * root;
-
+	 Bone * sibling;
 public:
 	//Create a new bone and attached it to parent.
 	Bone(Bone &prnt,string name, float x, float y, float z, float alpha, float beta, float gamma, float length );

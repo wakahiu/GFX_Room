@@ -1,16 +1,22 @@
 #include "bone.hpp"
 //Create a new bone and if parent exists, attach it as one of it's children.
 Bone::Bone(Bone &prnt,string name, float x, float y, float z, float alpha, float beta, float gamma, float length )
-	:parent(&prnt),name(name), x(x), y(y), z(z), alpha(alpha), beta(beta), gamma(gamma), length(length),childList(NULL){
+	:parent(&prnt),name(name), x(x), y(y), z(z), alpha(alpha), beta(beta), gamma(gamma), length(length),childList(NULL),sibling(NULL){
 	
 	struct boneNode * newNode = (struct boneNode*)malloc(sizeof(struct boneNode));
-	newNode->bone = this;
-	newNode->next = prnt.childList;
-	parent->childList = newNode;
-	
+	newNode->bone = new Bone(*this);
+	if(prnt.sibling){
+		newNode->next = prnt.sibling->childList;
+		parent->sibling->childList = newNode;
+	}else{
+		newNode->next = prnt.childList;
+		parent->childList = newNode;
+	}
+	sibling=newNode->bone;
 }
 
-Bone::Bone() :parent(NULL),name("root"), x(0.0f), y(0.0f), z(0.0f), alpha(0.0f), beta(0.0f), gamma(0.0f), length(0.0f),childList(NULL){
+Bone::Bone() :parent(NULL),name("root"), x(0.0f), y(0.0f), z(0.0f), 
+			alpha(0.0f), beta(0.0f), gamma(0.0f), length(0.0f),childList(NULL), sibling(NULL){
 }
 
 void Bone::addChild(const Bone child){
@@ -18,23 +24,8 @@ void Bone::addChild(const Bone child){
 };
 
 Bone::Bone(const Bone &other)
-	:parent(other.parent),name(other.name), x(other.x), y(other.y), z(other.z), alpha(other.alpha), beta(other.beta), gamma(other.gamma), length(other.length){
-	cout << "copy constructor called " << other.name << " parent "  << other.parent->name << endl;
-	/*if( other.parent->parent ){
-		for(list<Bone>::iterator it = this->parent->parent->children.begin(); it != this->parent->parent->children.end() ; ++it){
-			cout << it->name << "==" << other.parent->name << it->children.size() <<"\t" ;
-			if(!it->name.compare(other.parent->name) ){ 
-				cout << "found one " << other.parent->name << endl;
-				this->parent = &(*it);
-				Bone * grandParent = this->parent->parent;
-				this->parent->parent = NULL;			//Prevents copy constructor infinite loop;
-				it->children.push_back(*this);
-				this->parent->parent = grandParent;
-				cout << "\nPush bone " << this->name << " " << it->children.size() << " to parent " << this->parent->name << endl;
-			}
-		}
-	}
-	*/
+	:parent(other.parent),name(other.name), x(other.x), y(other.y), z(other.z), 
+	alpha(other.alpha), beta(other.beta), gamma(other.gamma), length(other.length),childList(NULL){
 }
 
 int Bone::size(void){

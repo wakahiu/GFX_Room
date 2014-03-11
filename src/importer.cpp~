@@ -14,7 +14,7 @@ void createPerson(Bone &root){
 					0.0,0.0,0.0,
 					0.0,0.0,00.0,
 					0.5);
-								
+							
 	Bone back(	root , "back", 
 				0.0,0.0,0.0,
 				0.0,0.0,180.0,
@@ -29,11 +29,26 @@ void createPerson(Bone &root){
 						0.0,0.0,0.0,
 						0.0,0.0,-45.0,
 						2.5f);
+			
+				Bone rTibia(	rFemur , "rTibia", 
+							0.0,0.0,0.0,
+							0.0,0.0,00.0,
+							2.5f);
 						
 		Bone lPelvis(	back , "lPelvis", 
 					0.0,0.0,0.0,
 					0.0,0.0,-45.0,
 					0.5);
+			
+			Bone lFemur(	lPelvis , "lFemur", 
+						0.0,0.0,0.0,
+						0.0,0.0,45.0,
+						2.5f);
+						
+				Bone lTibia( lFemur , "lTibia", 
+						0.0,0.0,0.0,
+						0.0,0.0,00.0,
+						2.5f);
 
 	Bone rHumerus(	root , "rHumerus", 
 				0.0,0.0,0.0,
@@ -54,11 +69,8 @@ void createPerson(Bone &root){
 					0.0,0.0,0.0,
 					0.0,0.0,60.0,
 					1.5);
-										
-	//cout << "------" << endl;
-	//root.printHeirarchy(1);			
-	//cout << "root size " << root.size() << endl;
-	//cout << "back size " << back.size() << endl;
+									
+	root.printHeirarchy(1);	
 }
 
 //bool loadMesh(const string fileName);

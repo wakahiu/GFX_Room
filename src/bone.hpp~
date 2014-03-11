@@ -39,7 +39,6 @@ public:
 	//bone;
 	//Takes a bone and prints to std out the heirarchy
 	void printHeirarchy(int rank);
-	void printHeirarchy(void);
 	void draw(void);
 	int	size(void);
 	void addChild(const Bone child);

@@ -136,7 +136,8 @@ void init(void)
 	glEndList();
    
    	createPerson(arm);
-   	//arm.printHeirarchy(1);
+   	
+   	arm.printHeirarchy(1);
 }
 
 
