@@ -9,6 +9,7 @@
 #include <fstream>      // std::ifstream
 #include <math.h>
 #include <vector>
+#include <list>
 
 using namespace std;
 

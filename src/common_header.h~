@@ -13,7 +13,7 @@
 using namespace std;
 
 #ifndef	COMMON_HEADER
-#defineCOMMON_HEADER
+#define COMMON_HEADER
 #define printOpenGLError() __printOpenGLError(__FILE__, __LINE__)
 
 static void __printOpenGLError(string file, int line){

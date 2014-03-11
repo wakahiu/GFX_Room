@@ -1,8 +1,11 @@
 #include "common_header.h"
 
+#ifndef BONE
+#define BONE
 /*
 * Bone structure. Each bone contains a position, length and angle
 */
+
 class Bone{
 
 private:
@@ -24,15 +27,23 @@ private:
 	 vector<Bone> children;
 	 //Only one parent
 	 Bone * parent;
+	 Bone * root;
 
 public:
 	//Create a new bone and attached it to parent.
-	Bone(Bone &parent,string name, float x, float y, float z, float alpha, float beta, float gamma, float length );
+	Bone(Bone &prnt,string name, float x, float y, float z, float alpha, float beta, float gamma, float length );
+	Bone();
+	Bone(const Bone &other);
 	//Takes a bone and adds a child. If it doesn't exist, it creates a childless 
 	//bone;
 	//Bone(Bone prnt);
 	//Takes a bone and prints to std out the heirarchy
+	Bone * printHeirarchyUp(void);
 	void printHeirarchy(void);
 	void draw(void);
+	int	size(void);
+	void addChild(const Bone child);
 			
 };
+
+#endif

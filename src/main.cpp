@@ -6,6 +6,7 @@
 #include "GLScreenCapturer.h"
 #include "trackball.h"
 #include "display.h"
+#include "importer.hpp"
 #include "bone.hpp"
 
 //#elif defined(__linux)
@@ -55,6 +56,8 @@ static GLfloat PosX =0.0;
 static GLfloat PosY =0.0;
 static GLfloat PosZ =-ROOMWIDTH/2;
 static GLScreenCapturer screenshot("screenshot-%d.ppm");
+
+Bone arm;
 
 void init(void) 
 {
@@ -132,7 +135,8 @@ void init(void)
 	
 	glEndList();
    
-   	//Bone skeleton;// = loadMesh("../models/");
+   	arm = createPerson();
+   	arm.printHeirarchy();
 }
 
 
@@ -148,6 +152,8 @@ void display(void)
 				0.0f, 1.0f,  0.0f);
 	
 	glPushMatrix();
+	//arm.draw();
+	/*
    //Turn on Texturing
    glEnable(GL_TEXTURE_2D);
    //Specify deCals
@@ -178,6 +184,7 @@ void display(void)
    
    if( captureScreen)
    	screenshot.capture();
+   */
    
    glPopMatrix();
 	
