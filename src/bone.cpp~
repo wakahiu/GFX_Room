@@ -26,22 +26,6 @@ void Bone::addChild(const Bone child){
 Bone::Bone(const Bone &other)
 	:parent(other.parent),name(other.name), x(other.x), y(other.y), z(other.z), 
 	alpha(other.alpha), beta(other.beta), gamma(other.gamma), length(other.length),childList(NULL){
-	cout << "copy constructor called " << other.name << " parent "  << other.parent->name << endl;
-	/*if( other.parent->parent ){
-		for(list<Bone>::iterator it = this->parent->parent->children.begin(); it != this->parent->parent->children.end() ; ++it){
-			cout << it->name << "==" << other.parent->name << it->children.size() <<"\t" ;
-			if(!it->name.compare(other.parent->name) ){ 
-				cout << "found one " << other.parent->name << endl;
-				this->parent = &(*it);
-				Bone * grandParent = this->parent->parent;
-				this->parent->parent = NULL;			//Prevents copy constructor infinite loop;
-				it->children.push_back(*this);
-				this->parent->parent = grandParent;
-				cout << "\nPush bone " << this->name << " " << it->children.size() << " to parent " << this->parent->name << endl;
-			}
-		}
-	}
-	*/
 }
 
 int Bone::size(void){
@@ -62,6 +46,10 @@ void Bone::printHeirarchy(int rank){
 	}
 }
 
+void Bone::incrementAngle(float a){
+	alpha+=a;
+}
+
 //Consider using quaternions
 void Bone::draw(void){
 	glPushMatrix();
@@ -76,17 +64,30 @@ void Bone::draw(void){
 	glRotatef(alpha,1.0,0.0,0.0);
 	glRotatef(beta,0.0,1.0,0.0);
 	glRotatef(gamma,0.0,0.0,1.0);
+	glutSolidSphere(0.3,20,20);
 	glBegin(GL_LINES);{
 		glColor3f(1.0,0.0,1.0);
 		glVertex3f(0.0,0.0,0.0);
 		glColor3f(0.0,1.0,0.0);
 		glVertex3f(0.0,length,0.0);
 	}glEnd();
+	
+	glTranslatef(0.0,length*0.5,0.0);
+	
+	glPushMatrix();
+	glScalef(1.0,length*4.5,1.0);
+	glutSolidCube(0.7);
+	glPopMatrix();
+	
 	//To reach to the new position
-	glTranslatef(0.0,length,0.0);
+	glTranslatef(0.0,length*0.5,0.0);
 	cout << "Drawing " << name << endl;
 	//Call function on all my children
 	struct boneNode * curr = this->childList;
+	if(!curr){
+		glColor3f(0.0,0.0,1.0);
+		glutSolidSphere(0.2,16,16);
+	}
 	while( curr ){
 		curr->bone->draw();
 		curr = curr->next;

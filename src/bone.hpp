@@ -41,6 +41,7 @@ public:
 	void printHeirarchy(int rank);
 	void draw(void);
 	int	size(void);
+	void incrementAngle(float a);
 	void addChild(const Bone child);
 			
 };

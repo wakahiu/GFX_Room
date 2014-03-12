@@ -59,6 +59,17 @@ static GLScreenCapturer screenshot("screenshot-%d.ppm");
 
 Bone arm;
 
+Bone pscm;      //Planar serial chain manipulator
+
+#define MAX_JOINT_MODELS 0
+int selectedModel = 0;
+struct modelSel{
+    bool sel;
+    Bone * bone;
+};
+
+struct modelSel selectedJointSystem[MAX_JOINT_MODELS];
+
 void init(void) 
 {
 
@@ -136,6 +147,11 @@ void init(void)
 	glEndList();
    
    	createPerson(arm);
+   	createPSCM(pscm);
+    selectedJointSystem[0].bone = &arm;
+    selectedJointSystem[1].bone = &pscm;
+    
+   	pscm.printHeirarchy(1);
    	arm.printHeirarchy(1);
 }
 
@@ -152,14 +168,17 @@ void display(void)
 				0.0f, 1.0f,  0.0f);
 	
 	glPushMatrix();
+    pscm.draw();
+    glTranslatef(4.0,0.0,0.0);
 	arm.draw();
-	/*
+	
    //Turn on Texturing
    glEnable(GL_TEXTURE_2D);
    //Specify deCals
    glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
    
-   
+   //The Room using display lists
+   glCallList(theRoom);
    
    //Draw a Rubiks Cube
    glPushMatrix();
@@ -168,8 +187,6 @@ void display(void)
    displayRubik(3.0,textures);
    glPopMatrix();
    
-   //The Room using display lists
-   glCallList(theRoom);
    
    	glColor3f(1.0,1.0,0.0);
    	glPushMatrix();
@@ -349,7 +366,24 @@ void keyboard( unsigned char key, int x, int y )
    	case 'r':
         captureScreen = !captureScreen; 
         break;
+
+    case '1':
+    case '2':
+        selectedJointSystem[selectedModel].sel = false;
+        selectedModel = key-'1';
+        selectedJointSystem[selectedModel].sel = true;
+        break;
         
+    case 'i':
+        selectedJointSystem[selectedModel].bone->incrementAngle(3.0);
+        glutPostRedisplay();
+        break;
+    case 'o':
+        selectedJointSystem[selectedModel].bone->incrementAngle(-3.0);
+        glutPostRedisplay();
+        break;
+
+
    	//Motion Goes here.
    	//Forward
    	case 'w':

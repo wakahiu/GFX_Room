@@ -46,6 +46,10 @@ void Bone::printHeirarchy(int rank){
 	}
 }
 
+void Bone::incrementAngle(float a){
+	alpha+=a;
+}
+
 //Consider using quaternions
 void Bone::draw(void){
 	glPushMatrix();
@@ -60,17 +64,30 @@ void Bone::draw(void){
 	glRotatef(alpha,1.0,0.0,0.0);
 	glRotatef(beta,0.0,1.0,0.0);
 	glRotatef(gamma,0.0,0.0,1.0);
+	glutSolidSphere(0.3,20,20);
 	glBegin(GL_LINES);{
 		glColor3f(1.0,0.0,1.0);
 		glVertex3f(0.0,0.0,0.0);
 		glColor3f(0.0,1.0,0.0);
 		glVertex3f(0.0,length,0.0);
 	}glEnd();
+	
+	glTranslatef(0.0,length*0.5,0.0);
+	
+	glPushMatrix();
+	glScalef(1.0,length*4.5,1.0);
+	glutSolidCube(0.2);
+	glPopMatrix();
+	
 	//To reach to the new position
-	glTranslatef(0.0,length,0.0);
+	glTranslatef(0.0,length*0.5,0.0);
 	cout << "Drawing " << name << endl;
 	//Call function on all my children
 	struct boneNode * curr = this->childList;
+	if(!curr){
+		glColor3f(0.0,0.0,1.0);
+		glutSolidSphere(0.2,16,16);
+	}
 	while( curr ){
 		curr->bone->draw();
 		curr = curr->next;

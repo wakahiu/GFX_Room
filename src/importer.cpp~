@@ -1,5 +1,22 @@
 #include "importer.hpp"
 
+void createPSCM(Bone &root){
+	Bone bone1(	root , "bone1", 
+				0.0,0.0,0.0,
+				0.0,0.0,180.0,
+				2.5);
+				
+		Bone bone2(	bone1 , "bone2", 
+					0.0,0.0,0.0,
+					0.0,0.0,45.0,
+					1.5f);
+		
+			Bone bone3(	bone2 , "bone3", 
+						0.0,0.0,0.0,
+						0.0,0.0,-45.0,
+						2.5f);
+}
+
 void createPerson(Bone &root){
 	//Create a root bone.
 	//This is a "null" bone that represents a single point and is the 
@@ -23,7 +40,7 @@ void createPerson(Bone &root){
 		Bone rPelvis(	back , "rPelvis", 
 					0.0,0.0,0.0,
 					0.0,0.0,45.0,
-					0.5f);
+					0.8f);
 		
 			Bone rFemur(	rPelvis , "rFemur", 
 						0.0,0.0,0.0,
@@ -38,7 +55,7 @@ void createPerson(Bone &root){
 		Bone lPelvis(	back , "lPelvis", 
 					0.0,0.0,0.0,
 					0.0,0.0,-45.0,
-					0.5);
+					0.8);
 			
 			Bone lFemur(	lPelvis , "lFemur", 
 						0.0,0.0,0.0,
@@ -69,8 +86,6 @@ void createPerson(Bone &root){
 					0.0,0.0,0.0,
 					0.0,0.0,60.0,
 					1.5);
-									
-	root.printHeirarchy(1);	
 }
 
 //bool loadMesh(const string fileName);
