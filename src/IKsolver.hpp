@@ -10,17 +10,24 @@ class IKsolver{
 
 public:
 	IKsolver(Tree * T);
-	//Matrix calcJacobian(void);
-	//void PseudoInvert(void);
-	//void Invert(void);
 	
-	void solve(void);
+	void updateJacobian(void);
+	void solve( VectorXd target );
+	void updateJacobianPinvDLS(void);
+	void IKupdateTargets( VectorXd e );
+	void updateJoints( VectorXd dTh );
+	
 private:
-	 
+
+	void __updateS( void );
+	
 	Tree * T;
 	MatrixXd J;
-	MatrixXd Jinv;
+	MatrixXd Jpinv;
 	MatrixXd JpseudoInv;
+
+	VectorXd e;
+	VectorXd s;
 	
 	int rows;
 	int cols;

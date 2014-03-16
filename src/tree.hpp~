@@ -6,6 +6,7 @@
 
 class Tree{
 
+	friend class IKsolver;
 private:
 	Node * root;
 	int numEff;

@@ -72,6 +72,8 @@ struct modelSel{
 };
 
 struct modelSel selectedJointSystem[MAX_JOINT_MODELS];
+VectorXd t(3);
+
 
 void init(void) 
 {
@@ -162,6 +164,9 @@ void init(void)
    
    	pscm->printHeirarchy();
    	person->printHeirarchy();
+   	t(0) = 1.0;
+   	t(1) = 3.0;
+   	t(2) = 0.0;
    	
    	solverChain =  new IKsolver(pscm);
 }
@@ -186,7 +191,7 @@ void display(void)
     pscm->draw();
 	person->draw();
 	
-	solverChain->solve();
+	solverChain->solve( t );
 	
    //Turn on Texturing
    glEnable(GL_TEXTURE_2D);

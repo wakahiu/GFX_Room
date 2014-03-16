@@ -15,8 +15,8 @@ Tree * createPSCM( float x, float y, float z ){
 			
 	T->addChild( "child1", "child2", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
-			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-			90.0, 3.0,
+			RowVector3d(1.0,0.0,1.0),						//Axis of rotation
+			45.0, 3.0,
 			JOINT, false, false );	
 		
 	T->addChild( "child2", "child3", 
@@ -27,16 +27,22 @@ Tree * createPSCM( float x, float y, float z ){
 			
 	T->addChild( "child3", "child4", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
-			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-			90.0, 3.0,
+			RowVector3d(1.0,0.0,0.0),						//Axis of rotation
+			-90.0, 3.0,
 			JOINT, false, false );
 			
-	T->addChild( "child4", "eff1", 
+	T->addChild( "child4", "child5", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			40.0, 3.0,
+			JOINT, false, false );
+			
+	T->addChild( "child5", "eff1", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 			00.0, 0.0,
 			EFFECTOR, false, false );
-				
+							
 	return T;
 }
 

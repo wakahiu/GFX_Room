@@ -11,7 +11,6 @@ private:
 	Node * root;
 	int numEff;
 	int numJoints;
-	MatrixXd J;
 	
 	void __draw(Node * n);
 	void __printHeirarchy(Node  * n, int rank);

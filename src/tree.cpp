@@ -2,6 +2,7 @@
 
 Tree::Tree(RowVector3d v){
 	root = new Node( v );
+	
 	numEff = 0;
 	numJoints = 0;
 }
@@ -42,9 +43,12 @@ void Tree::addChild(	string parentName,string childName,
 	switch( type ){
 		case EFFECTOR:
 			child->effId = numEff++;
+			cout << child->effId << endl;
 			break;
 		case JOINT:
+			
 			child->jointId = numJoints++;
+			
 			break;
 		case BOTH:
 			child->effId = numEff++;

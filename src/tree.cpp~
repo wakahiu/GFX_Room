@@ -2,6 +2,7 @@
 
 Tree::Tree(RowVector3d v){
 	root = new Node( v );
+	
 	numEff = 0;
 	numJoints = 0;
 }
@@ -25,8 +26,6 @@ void Tree::addChild(	string parentName,string childName,
 	Quaterniond * pg = parent->quat;
 	Quaterniond q( c , s*px , s*py, s* pz );
 	Quaterniond p( 0, 0, parent->length, 0 );
-	cout << q.w()<< " "  << q.x()<< " "  << q.y() << " " << q.z() << " * ";
-	cout << pg->w()<< " "  << pg->x()<< " "  << pg->y() << " " << pg->z() << " == ";
 	
 	//Quaternion rotations are p*q*pinv
 	Quaterniond rot_p( q * (*pg) * p * pg->inverse() * q.inverse()  );
@@ -44,9 +43,12 @@ void Tree::addChild(	string parentName,string childName,
 	switch( type ){
 		case EFFECTOR:
 			child->effId = numEff++;
+			cout << child->effId << endl;
 			break;
 		case JOINT:
+			
 			child->jointId = numJoints++;
+			
 			break;
 		case BOTH:
 			child->effId = numEff++;
