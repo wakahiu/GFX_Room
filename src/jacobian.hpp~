@@ -1,0 +1,26 @@
+#include "common_header.h"
+
+#ifndef IK_SOLVER
+#define IK_SOLVER
+
+class IKsolver{
+	IKsolver(Bone){
+	}
+	
+	void calcJacobian(void);
+	void PseudoInvert(void);
+	void Invert(void);
+	
+
+private:
+
+	Matrix J;
+	Matrix Jinv;
+	Matrix JpseudoInv;
+	
+	int rows;
+	int cols;
+	
+	
+}
+#endif

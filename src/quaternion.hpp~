@@ -1,0 +1,17 @@
+#include "common_headers.h"
+class Quaternion{
+
+public:
+	//Takes a vector p and rotates it by theta
+	static RowVector3d rotate(RowVector3d p, RowVector3d n, double theta){
+		n.normalize();
+		sinTheta = 
+		RowVector4d q(  n  );
+		
+		RowVector4d q(  n  );
+		
+		
+	}
+	
+	Quaternion *(Row)
+}

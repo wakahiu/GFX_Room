@@ -7,7 +7,8 @@
 #include "trackball.h"
 #include "display.h"
 #include "importer.hpp"
-#include "bone.hpp"
+#include "tree.hpp"
+#include "IKsolver.hpp"
 
 //#elif defined(__linux)
 #if defined(__APPLE__) || defined(MACOSX)
@@ -57,15 +58,17 @@ static GLfloat PosY =0.0;
 static GLfloat PosZ =-ROOMWIDTH/2;
 static GLScreenCapturer screenshot("screenshot-%d.ppm");
 
-Bone arm;
+Tree * person;
+Tree * pscm;      //Planar serial chain manipulator
 
-Bone pscm;      //Planar serial chain manipulator
+IKsolver * solverChain;
 
-#define MAX_JOINT_MODELS 0
+#define MAX_JOINT_MODELS 5
+
 int selectedModel = 0;
 struct modelSel{
     bool sel;
-    Bone * bone;
+    Tree * tree;
 };
 
 struct modelSel selectedJointSystem[MAX_JOINT_MODELS];
@@ -76,7 +79,7 @@ void init(void)
 	//Set up lightin Some Lighting.
 	float lightY = 10.0;
 	const float amb = 1.4;
-	const float diff = 1.7;
+	const float diff = 0.7;
     const float LightAmbient[][4]  = {  { amb, amb, amb, 1.0f },
     									{ amb, amb, amb, 1.0f } };
     									
@@ -104,7 +107,7 @@ void init(void)
    glEnable(GL_DEPTH_TEST);
    glEnable(GL_LIGHT0);
    glEnable(GL_LIGHTING);
-  
+ 
    	//Import Textures.
    	LoadBMP("textures/red.bmp",red);
    	LoadBMP("textures/green.bmp",green);
@@ -146,19 +149,29 @@ void init(void)
 	
 	glEndList();
    
-   	createPerson(arm);
-   	createPSCM(pscm);
-    selectedJointSystem[0].bone = &arm;
-    selectedJointSystem[1].bone = &pscm;
+   
+   	/*
+   	* Kinematic models
+   	*/
+   	person = createPerson(0.0,0.0,0.0);
+   	pscm = createPSCM(0.0,-5.0,0.0);
+   	
+    selectedJointSystem[0].tree = person;
+    selectedJointSystem[1].tree = pscm;
     
-   	pscm.printHeirarchy(1);
-   	arm.printHeirarchy(1);
+   
+   	pscm->printHeirarchy();
+   	person->printHeirarchy();
+   	
+   	solverChain =  new IKsolver(pscm);
 }
 
 
 void display(void)
 {
-	
+
+	//Update goes here.
+		
    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
    	// Reset transformations
 	glLoadIdentity();
@@ -168,9 +181,12 @@ void display(void)
 				0.0f, 1.0f,  0.0f);
 	
 	glPushMatrix();
-    pscm.draw();
-    glTranslatef(4.0,0.0,0.0);
-	arm.draw();
+	
+	//----------------------------------------------------------------------
+    pscm->draw();
+	person->draw();
+	
+	solverChain->solve();
 	
    //Turn on Texturing
    glEnable(GL_TEXTURE_2D);
@@ -219,7 +235,7 @@ void reshape (int w, int h)
    glLoadIdentity ();								//Init current projection matrix
    													//Only the matrix specified in the following has effect
    								
-   gluPerspective(60.0, (GLfloat)w/GLfloat(h),1.0,120.0);	//Perspective projection
+   gluPerspective(60.0, (GLfloat)w/GLfloat(h),10.0,100.0);	//Perspective projection
    
    glMatrixMode (GL_MODELVIEW);						//Succeeding transforms now affect the model view matrix 
    						glFlush ();							//Instead of the projection matrix.
@@ -324,13 +340,15 @@ void mouse( int button, int state, int x, int y)
 {
     //tbMouse(button, state, x, y);
     
-    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-        processSelection(x, y);
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+    	cout << "clicked on mouse (" << x << "," << y <<")" << endl;
+    }
+        //processSelection(x, y);
     
     if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
     {
         //pickedObj = -1;
-        glutPostRedisplay();
+        //glutPostRedisplay();
     }
 }
 
@@ -377,11 +395,11 @@ void keyboard( unsigned char key, int x, int y )
         break;
         
     case 'i':
-        selectedJointSystem[selectedModel].bone->incrementAngle(3.0);
+        //selectedJointSystem[selectedModel].tree->incrementAngle(3.0);
         glutPostRedisplay();
         break;
     case 'o':
-        selectedJointSystem[selectedModel].bone->incrementAngle(-3.0);
+        //selectedJointSystem[selectedModel].tree->incrementAngle(-3.0);
         glutPostRedisplay();
         break;
 
@@ -413,8 +431,8 @@ void keyboard( unsigned char key, int x, int y )
 
 void motion(int x, int y)
 {
-    tbMotion(x, y);
-    
+    //tbMotion(x, y);
+    return;
     GLfloat winX, winY, winZ;
     GLdouble posX, posY, posZ;
     
@@ -431,11 +449,14 @@ void motion(int x, int y)
 int main(int argc, char** argv)
 {
    glutInit(&argc, argv);
+   
+   //Initialize the graphics
    glutInitDisplayMode (GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
    glutInitWindowSize (900, 700); 
-   glutInitWindowPosition (100, 100);
+   glutInitWindowPosition (200, 100);
    glutCreateWindow (argv[0]);
- 	assert(!glewInit());
+   
+   assert(!glewInit());
    init ();
    glutDisplayFunc(display); 
    glutReshapeFunc(reshape);

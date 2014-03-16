@@ -11,8 +11,13 @@
 #include <vector>
 #include <list>
 #include <utility>		//Pair
+#include <Eigen/Core>
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
+#include <stack>
 
 using namespace std;
+using namespace Eigen;
 
 #ifndef	COMMON_HEADER
 #define COMMON_HEADER
@@ -28,6 +33,10 @@ static void __printOpenGLError(string file, int line){
         exit(1);
     }
 }
+
+#define RAD(x) x/180.000*M_PI
+
+enum nodeType {EFFECTOR, JOINT, BOTH};
 
 #define ROOMHEIGHT	30
 #define ROOMWIDTH 	25

@@ -1,92 +1,120 @@
 #include "importer.hpp"
 
-void createPSCM(Bone &root){
-	Bone bone1(	root , "bone1", 
-				0.0,0.0,0.0,
-				0.0,0.0,180.0,
-				2.5);
-				
-		Bone bone2(	bone1 , "bone2", 
-					0.0,0.0,0.0,
-					0.0,0.0,45.0,
-					1.5f);
+Tree * createPSCM( float x, float y, float z ){
+
+	RowVector3d rootPos( (double)x, (double)y , (double)z );
+	
+	//Create a rooted tree. The root position is assumed to be absolute
+	Tree * T = new Tree( rootPos );
+
+	T->addChild( "root", "child1", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,0.0),						//Axis of rotation
+			0.0, 3.0,
+			JOINT, false, false );
+			
+	T->addChild( "child1", "child2", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			90.0, 3.0,
+			JOINT, false, false );	
 		
-			Bone bone3(	bone2 , "bone3", 
-						0.0,0.0,0.0,
-						0.0,0.0,-45.0,
-						2.5f);
+	T->addChild( "child2", "child3", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			-90.0, 3.0,
+			JOINT, false, false );
+			
+	T->addChild( "child3", "child4", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			-90.0, 3.0,
+			JOINT, false, false );
+			
+	T->addChild( "child4", "eff1", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			00.0, 0.0,
+			EFFECTOR, false, false );
+				
+	return T;
 }
 
-void createPerson(Bone &root){
-	//Create a root bone.
-	//This is a "null" bone that represents a single point and is the 
+Tree * createPerson( float x, float y, float z ){
+	RowVector3d rootPos( (double)x, (double)y , (double)z );
+	
+	//Create a rooted tree
+	Tree * T = new Tree( rootPos );
+	
+	//Create a root Node.
+	//This is a "null" Node that represents a single point and is the 
 	//Animation center of the structure
-
-	Bone neck(	root , "neck", 
+	/*
+	Node neck(	root , "neck", 
 				0.0,0.0,0.0,
 				0.0,0.0,0.0,
 				1.0);
 		
-		Bone head(	neck , "head", 
+		Node head(	neck , "head", 
 					0.0,0.0,0.0,
 					0.0,0.0,00.0,
 					0.5);
 							
-	Bone back(	root , "back", 
+	Node back(	root , "back", 
 				0.0,0.0,0.0,
 				0.0,0.0,180.0,
 				2.5);
 				
-		Bone rPelvis(	back , "rPelvis", 
+		Node rPelvis(	back , "rPelvis", 
 					0.0,0.0,0.0,
 					0.0,0.0,45.0,
 					0.8f);
 		
-			Bone rFemur(	rPelvis , "rFemur", 
+			Node rFemur(	rPelvis , "rFemur", 
 						0.0,0.0,0.0,
 						0.0,0.0,-45.0,
 						2.5f);
 			
-				Bone rTibia(	rFemur , "rTibia", 
+				Node rTibia(	rFemur , "rTibia", 
 							0.0,0.0,0.0,
 							0.0,0.0,00.0,
 							2.5f);
 						
-		Bone lPelvis(	back , "lPelvis", 
+		Node lPelvis(	back , "lPelvis", 
 					0.0,0.0,0.0,
 					0.0,0.0,-45.0,
 					0.8);
 			
-			Bone lFemur(	lPelvis , "lFemur", 
+			Node lFemur(	lPelvis , "lFemur", 
 						0.0,0.0,0.0,
 						0.0,0.0,45.0,
 						2.5f);
 						
-				Bone lTibia( lFemur , "lTibia", 
+				Node lTibia( lFemur , "lTibia", 
 						0.0,0.0,0.0,
 						0.0,0.0,00.0,
 						2.5f);
 
-	Bone rHumerus(	root , "rHumerus", 
+	Node rHumerus(	root , "rHumerus", 
 				0.0,0.0,0.0,
 				0.0,0.0,120.0,
 				1.5);
 				
-		Bone rUlna(	rHumerus  , "rUlna", 
+		Node rUlna(	rHumerus  , "rUlna", 
 					0.0,0.0,0.0,
 					0.0,0.0,-60.0,
 					1.5);
 				
-	Bone lHumerus(	root , "lHumerus", 
+	Node lHumerus(	root , "lHumerus", 
 				0.0,0.0,0.0,
 				0.0,0.0,-120.0,
 				1.5);
 		
-		Bone lUlna(	lHumerus , "lUlna", 
+		Node lUlna(	lHumerus , "lUlna", 
 					0.0,0.0,0.0,
 					0.0,0.0,60.0,
 					1.5);
+					*/
+	return T;
 }
-
-//bool loadMesh(const string fileName);
 
