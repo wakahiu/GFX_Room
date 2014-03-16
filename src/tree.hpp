@@ -19,6 +19,7 @@ private:
 	
 	
 public:
+	void incrementAngle(float dTh);
 	Tree(RowVector3d v);
 	void printHeirarchy(void);
 	void draw(void);

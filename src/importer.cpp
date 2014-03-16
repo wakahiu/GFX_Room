@@ -9,10 +9,10 @@ Tree * createPSCM( float x, float y, float z ){
 
 	T->addChild( "root", "child1", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
-			RowVector3d(0.0,0.0,0.0),						//Axis of rotation
-			0.0, 3.0,
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			-45.0, 3.0,
 			JOINT, false, false );
-			
+	
 	T->addChild( "child1", "child2", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 			RowVector3d(1.0,0.0,1.0),						//Axis of rotation
@@ -36,13 +36,13 @@ Tree * createPSCM( float x, float y, float z ){
 			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 			40.0, 0.0,
 			JOINT, false, false );
-			
-	T->addChild( "child5", "eff1", 
+	
+	T->addChild( "child4", "eff1", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 			00.0, 0.0,
 			EFFECTOR, false, false );
-							
+				
 	return T;
 }
 
@@ -52,6 +52,24 @@ Tree * createPerson( float x, float y, float z ){
 	//Create a rooted tree
 	Tree * T = new Tree( rootPos );
 	
+	T->addChild( "root", "child1", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			-45.0, 3.0,
+			JOINT, false, false );
+			
+	T->addChild( "child1", "child2", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			90.0, 3.0,
+			JOINT, false, false );
+	
+	T->addChild( "child2", "eff1", 
+			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+			00.0, 0.0,
+			EFFECTOR, false, false );
+			
 	//Create a root Node.
 	//This is a "null" Node that represents a single point and is the 
 	//Animation center of the structure

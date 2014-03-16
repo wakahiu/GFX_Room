@@ -18,7 +18,7 @@
 #endif
 
 
-#define BUFFER_LENGTH 64
+#define BUFFER_LENGTH 256
 
 using namespace std;
 GLfloat spin = 0.0;
@@ -57,11 +57,12 @@ static GLfloat PosX =0.0;
 static GLfloat PosY =0.0;
 static GLfloat PosZ =-ROOMWIDTH/2;
 static GLScreenCapturer screenshot("screenshot-%d.ppm");
-
+char titleString[150];
 Tree * person;
 Tree * pscm;      //Planar serial chain manipulator
 
 IKsolver * solverChain;
+IKsolver * solverPerson;
 
 #define MAX_JOINT_MODELS 5
 
@@ -74,6 +75,54 @@ struct modelSel{
 struct modelSel selectedJointSystem[MAX_JOINT_MODELS];
 VectorXd t(3);
 
+bool IKmode = false;
+int  numModels = 0;
+
+
+void drawSelectableObjects( void )
+{
+    float currentColor[4];
+    glGetFloatv(GL_CURRENT_COLOR, currentColor);
+    
+    GLfloat selectedColor[] = {0, 1, 0, 1};
+    GLfloat unselectedColor[] = {0, 0,1, 1};
+
+    // Initialize the name stack
+    glInitNames();
+    glPushName(0);
+    
+    /* save the current transformation state */
+    glPushMatrix();
+    {
+    
+        if( selectedJointSystem[0].sel )
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, selectedColor);
+        else
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, unselectedColor);
+        glLoadName(0);
+        //glutSolidSphere(2.4,36,36);
+        //glTranslatef(0.0,5,0.00);
+        //glutSolidSphere(2.4,36,36);
+        pscm->draw();
+
+        if( selectedJointSystem[1].sel  )
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, selectedColor);
+        else
+            glMaterialfv(GL_FRONT, GL_DIFFUSE, unselectedColor);
+        glLoadName(1);
+        //glTranslatef(0.0,-5,05.00);
+        //glutSolidSphere(2.4,36,36);
+        person->draw();
+    }
+    /* restore the previous transformation state*/
+    glPopMatrix();
+    
+    GLfloat blankMaterial[] = {1.0, 1.0, 1.0, 0.0};
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, blankMaterial);
+		
+    glColor4fv(currentColor);
+
+}
 
 void init(void) 
 {
@@ -151,7 +200,16 @@ void init(void)
 	
 	glEndList();
    
+   	 tbInit(GLUT_RIGHT_BUTTON);
+   	 tbAnimate(GL_TRUE);
    
+   if(IKmode){
+		sprintf (titleString, "INVERSE KINEMATICS MODE *\n");
+	}else{
+		sprintf (titleString, "FORWARD KINEMATICS MODE *\n");
+	}
+    glutSetWindowTitle(titleString);
+   glutSetWindowTitle(titleString);
    	/*
    	* Kinematic models
    	*/
@@ -159,16 +217,23 @@ void init(void)
    	pscm = createPSCM(0.0,-5.0,0.0);
    	
     selectedJointSystem[0].tree = person;
+    numModels++;
     selectedJointSystem[1].tree = pscm;
+    numModels++;
+    for(int i = 0; i < numModels &&  i < MAX_JOINT_MODELS ;i++ ){
+    	
+    	selectedJointSystem[i].sel = (i==0)? true : false;
+    }
     
    
    	pscm->printHeirarchy();
    	person->printHeirarchy();
-   	t(0) = 1.0;
-   	t(1) = 3.0;
+   	t(0) = 0.0;
+   	t(1) = 0.0;
    	t(2) = 0.0;
    	
    	solverChain =  new IKsolver(pscm);
+ 	solverPerson =  new IKsolver(person);
 }
 
 
@@ -186,47 +251,55 @@ void display(void)
 				0.0f, 1.0f,  0.0f);
 	
 	glPushMatrix();
+	{
 	
-	//----------------------------------------------------------------------
-    pscm->draw();
-	person->draw();
+		//----------------------------------------------------------------------
+		drawSelectableObjects();
 	
-	solverChain->solve( t );
+		if(IKmode){
+			solverChain->solve( t );
+			solverPerson->solve( t );
+		}
 	
-   //Turn on Texturing
-   glEnable(GL_TEXTURE_2D);
-   //Specify deCals
-   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
-   
-   //The Room using display lists
-   glCallList(theRoom);
-   
-   /*
-   
-   //Draw a Rubiks Cube
-   glPushMatrix();
-   glTranslatef(sphereX,-sphereY,-sphereZ);
-   glRotatef(spin,sphereX,-sphereY,-sphereZ);
-   displayRubik(3.0,textures);
-   glPopMatrix();
-   
-   
-   	glColor3f(1.0,1.0,0.0);
-   	glPushMatrix();
-	glTranslatef(-sphereX,-sphereY,-sphereZ);
-	glutSolidSphere(3.0,40,20);
-	glPopMatrix(); 
+	   //Turn on Texturing
+	   glEnable(GL_TEXTURE_2D);
+	   //Specify deCals
+	   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	   
+	   //The Room using display lists
+	   //glCallList(theRoom);
+	   
+	   // Retrieve current matrice before they popped.
+		glGetDoublev( GL_MODELVIEW_MATRIX, modelview );        // Retrieve The Modelview Matrix
+		glGetDoublev( GL_PROJECTION_MATRIX, projection );    // Retrieve The Projection Matrix
+		glGetIntegerv( GL_VIEWPORT, viewport );                // Retrieves The Viewport Values (X, Y, Width, Height)
+	   
+	   /*
+	   
+	   //Draw a Rubiks Cube
+	   glPushMatrix();
+	   glTranslatef(sphereX,-sphereY,-sphereZ);
+	   glRotatef(spin,sphereX,-sphereY,-sphereZ);
+	   displayRubik(3.0,textures);
+	   glPopMatrix();
+	   
+	   
+	   	glColor3f(1.0,1.0,0.0);
+	   	glPushMatrix();
+		glTranslatef(-sphereX,-sphereY,-sphereZ);
+		glutSolidSphere(3.0,40,20);
+		glPopMatrix(); 
 	
-	glPushMatrix();
-	glTranslatef(sphereX,sphereY,-sphereZ);
-	glutSolidSphere(3.0,40,20);
-	glPopMatrix();
+		glPushMatrix();
+		glTranslatef(sphereX,sphereY,-sphereZ);
+		glutSolidSphere(3.0,40,20);
+		glPopMatrix();
+	   
+	   if( captureScreen)
+	   	screenshot.capture();
+	   */
    
-   if( captureScreen)
-   	screenshot.capture();
-   */
-   
-   glPopMatrix();
+   }glPopMatrix();
 	
     glutSwapBuffers();
 }
@@ -252,7 +325,6 @@ void reshape (int w, int h)
 
 void processSelection(int xPos, int yPos)
 {
-	
     GLfloat fAspect;
     
     // Space for selection buffer
@@ -265,6 +337,7 @@ void processSelection(int xPos, int yPos)
     glSelectBuffer(BUFFER_LENGTH, selectBuff);
     
     // Get the viewport
+    //x and y coordinates followed by h and w
     glGetIntegerv(GL_VIEWPORT, viewport);
     
     // Switch to projection and save the matrix
@@ -285,52 +358,52 @@ void processSelection(int xPos, int yPos)
         fAspect = (float)viewport[2] / (float)viewport[3];
         gluPerspective(45.0f, fAspect, 1.0, 425.0);
         
-        
+        //Enter selection mode and redraw objects on screen
         // Render only those needed for selection
         glPushMatrix();    
         {
-            //setCamera();
             tbMatrixForSelection();
-            
-            //drawSelectableTeapots();
+            drawSelectableObjects();
         }
         glPopMatrix();
         
-        
+         for(int i = 0; i < numModels &&  i < MAX_JOINT_MODELS ;i++ ){
+			selectedJointSystem[i].sel = (i==0);
+		}
+    
         // Collect the hits
         hits = glRenderMode(GL_RENDER);
-        
-        //isTeapot1_selected = false;
-        //isTeapot2_selected = false;
         
         // If hit(s) occurred, display the info.
         if(hits != 0)
         {
-        
+        	
+        	
             // Save current picked object.
             // Take only the nearest selection
-            //pickedObj = selectBuff[3];
+            int pickedObj = selectBuff[3];
             
             //sprintf (titleString, "You clicked on %d", pickedObj);
             //glutSetWindowTitle(titleString);
             
-            /*
             if (pickedObj == 0) {
-                isTeapot1_selected = true;
+              selectedJointSystem[0].sel = true;
+              glutSetWindowTitle("Selected obj0!");
             }
             
-            if (pickedObj == 1) {
-                isTeapot2_selected = true;
-            }*/
-            
+            if ( pickedObj == 1) {
+              selectedJointSystem[1].sel = true;
+              glutSetWindowTitle("Selected obj1!");
+            }
+           
         }
-        else
+        else{
             glutSetWindowTitle("Nothing was clicked on!");
+        }
         
         
         // Restore the projection matrix
         glMatrixMode(GL_PROJECTION);
-        
     }
     glPopMatrix();
     
@@ -340,22 +413,6 @@ void processSelection(int xPos, int yPos)
     glutPostRedisplay();
 }
 
-
-void mouse( int button, int state, int x, int y)
-{
-    //tbMouse(button, state, x, y);
-    
-    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
-    	cout << "clicked on mouse (" << x << "," << y <<")" << endl;
-    }
-        //processSelection(x, y);
-    
-    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
-    {
-        //pickedObj = -1;
-        //glutPostRedisplay();
-    }
-}
 
 void keyboard( unsigned char key, int x, int y )
 {
@@ -387,28 +444,50 @@ void keyboard( unsigned char key, int x, int y )
        		glutIdleFunc(NULL);
       	sphereBouncing = !sphereBouncing; 
         break;
+   	
+   	case ' ':
+   		IKmode = IKmode ? false : true;
+   		if(IKmode){
+   			sprintf (titleString, "INVERSE KINEMATICS MODE *\n");
+   		}else{
+   			sprintf (titleString, "FORWARD KINEMATICS MODE *\n");
+   			glutIdleFunc(NULL);
+   		}
+        glutSetWindowTitle(titleString);
+        glutPostRedisplay();
+   		break;
    		
    	case 'r':
         captureScreen = !captureScreen; 
         break;
-
+       
+     
+	//Selects the model
     case '1':
     case '2':
-        selectedJointSystem[selectedModel].sel = false;
-        selectedModel = key-'1';
-        selectedJointSystem[selectedModel].sel = true;
+    	if( !IKmode ){
+		    selectedJointSystem[selectedModel].sel = false;
+		    selectedModel = key-'1';
+		    selectedJointSystem[selectedModel].sel = true;
+		    glutPostRedisplay();
+        }
         break;
         
-    case 'i':
-        //selectedJointSystem[selectedModel].tree->incrementAngle(3.0);
-        glutPostRedisplay();
+    case '+':
+    case '=':
+    	if( !IKmode ){
+        	selectedJointSystem[selectedModel].tree->incrementAngle(3.0);
+        	glutPostRedisplay();
+        }
         break;
-    case 'o':
-        //selectedJointSystem[selectedModel].tree->incrementAngle(-3.0);
-        glutPostRedisplay();
+    case '-':
+    case '_':
+    	if( !IKmode ){
+        	selectedJointSystem[selectedModel].tree->incrementAngle(-3.0);
+        	glutPostRedisplay();
+        }
         break;
-
-
+       
    	//Motion Goes here.
    	//Forward
    	case 'w':
@@ -434,10 +513,29 @@ void keyboard( unsigned char key, int x, int y )
     }
 }
 
+//Called whenever the mouse is clicked.
+void mouse( int button, int state, int x, int y)
+{
+    tbMouse(button, state, x, y);
+    
+    //Start updating target positions in Inv Kinematics mode
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+        processSelection(x, y);
+    
+    //Stop updating target positions in Inv  Kinematics mode
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+        //pickedObj = -1;
+        glutPostRedisplay();
+    }
+}
+
+//Called whenever the mouse moves.
 void motion(int x, int y)
 {
-    //tbMotion(x, y);
-    return;
+    tbMotion(x, y);
+    
+    
     GLfloat winX, winY, winZ;
     GLdouble posX, posY, posZ;
     
@@ -445,6 +543,13 @@ void motion(int x, int y)
     winY = (float)viewport[3] - (float)y;
     glReadPixels( x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
     gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+    
+    if(IKmode){
+    	t(0) = posX;
+   		t(1) = posY;
+   		t(2) = 0;
+    }
+    
     glutPostRedisplay();
 
 }

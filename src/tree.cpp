@@ -7,6 +7,9 @@ Tree::Tree(RowVector3d v){
 	numJoints = 0;
 }
 
+void Tree::incrementAngle(float dTh){
+	root->theta+=dTh;
+}
 void Tree::addChild(	string parentName,string childName, 
 				RowVector3d posOffset, RowVector3d axisRot,
 				double theta, float length,
@@ -103,12 +106,22 @@ void Tree::__draw(Node * n){
 	else
 		glTranslatef(n->posOffset->x(),n->posOffset->y(),n->posOffset->z());
 	
-	
-	glutSolidSphere(0.3,20,20);
+	if( n->type == JOINT ) {
+		glutSolidSphere(0.4,20,20);
+	}
 	
 	glRotatef(n->theta,n->axisRot->x(),n->axisRot->y(),n->axisRot->z());
 	
+	
 	glTranslatef(0.0,n->length*0.5,0.0);
+	
+	if( (n->type == EFFECTOR) || (n->type == BOTH) ){
+		GLfloat effColor[] = {1.0, 0.0, 1.0, 0.0};
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, effColor);
+		glColor3f(0.0,0.0,1.0);
+		glutSolidSphere(0.4,16,16);
+	}
+	
 	
 	glPushMatrix();
 	glScalef(1.0,n->length*4.5,1.0);
@@ -120,10 +133,6 @@ void Tree::__draw(Node * n){
 	//Call function on all my children
 	struct nodeLink * curr = n->children;
 	
-	if(curr && (curr->node->type == EFFECTOR) ){
-		glColor3f(0.0,0.0,1.0);
-		glutSolidSphere(0.2,16,16);
-	}
 	while( curr ){
 		__draw( curr->node );
 		curr = curr->next;

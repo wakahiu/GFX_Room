@@ -11,7 +11,6 @@ private:
 	Node * root;
 	int numEff;
 	int numJoints;
-	MatrixXd J;
 	
 	void __draw(Node * n);
 	void __printHeirarchy(Node  * n, int rank);
@@ -20,6 +19,7 @@ private:
 	
 	
 public:
+	inline void incrementAngle(float dTh);
 	Tree(RowVector3d v);
 	void printHeirarchy(void);
 	void draw(void);

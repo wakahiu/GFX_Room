@@ -32,7 +32,7 @@ Node::Node( const RowVector3d v ):
 	
 	posAbs( new RowVector3d(v)),
 	posOffset( new RowVector3d(0.0,0.0,0.0) ),
-	axisRot( (new RowVector3d(0.0,0.0,0.0)) ),
+	axisRot( (new RowVector3d(0.0,0.0,1.0)) ),
 	
 	quat( new Quaterniond( 1.0,0.0,0.0,0.0 )),
 	children(NULL),

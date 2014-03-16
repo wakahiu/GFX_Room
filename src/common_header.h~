@@ -36,13 +36,14 @@ static void __printOpenGLError(string file, int line){
 }
 
 #define RAD(x) x/180.000*M_PI
-#define RAD(x) x/180.000*M_PI
+#define DEG(x) x*180.000/M_PI
 
 enum nodeType {EFFECTOR, JOINT, BOTH};
 
 #define ROOMHEIGHT	30
 #define ROOMWIDTH 	25
 #define ROOMLENGTH	35
+#define LAMBDA 1e-4f;
 
 #define X .525731112119133606 * 5
 #define Z .850650808352039932 * 5
