@@ -14,6 +14,30 @@ IKsolver::IKsolver(Tree * T): T(T){
 	prevTarget.resize(3*(T->numEff));
 	prevTarget.setZero();
 }
+VectorXd IKsolver::initTargs(void){
+	
+	VectorXd Targs(3*T->numEff);
+	//DFS traversal of the tree to get update the joint angles.
+	stack<Node *> seqTree;
+	seqTree.push( T->getRoot() );
+
+	//Update the angles th += dth
+	while(!seqTree.empty()){
+	
+		Node * node = seqTree.top();
+		seqTree.pop(); 
+		
+		for( struct nodeLink * curr = node->children; curr; curr = curr->next){
+			seqTree.push( curr->node );
+		}
+		
+		if( (node->getType() == INACTIVE || node->getType() == EFFECTOR  || node->getType() == BOTH) ){
+			
+				Targs( 3*node->effId + 0 ) = 0.0;
+		}
+	}
+	return Targs;
+}
 
 void IKsolver::solve( VectorXd target){
 	
@@ -24,13 +48,19 @@ void IKsolver::solve( VectorXd target){
 	e = target - s;
 	
 	int k = this->getActiveEffId();
-
 	
-	cout << "Target Distance " << e.norm() ;
-	cout  << " pos x " << target(k*3+0) << " y " << target(k*3+1) << " z "<< target(k*3+2) << endl;
+	//Display the position of the target
+	GLfloat effColor[] = {.5, 0.9, 1, 0.4};
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, effColor);
+	glPushMatrix();
+	glTranslatef( target(k*3+0), target(k*3+1), target(k*3+2) );
+	glutSolidSphere(0.2,16,16);
+	glPopMatrix();
+	GLfloat otherColor[] = {0.3, 0.3, 0.3, 0.0};
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, otherColor);
 	
-	if(e.norm() > 0.5 ){
-		this->solve( target - e/2.0);
+	if(e.norm() > 1.0 ){
+		this->solve( target - e* 00.1);
 	}else{
 	
 		//cout << "Solver " << endl;
@@ -39,26 +69,7 @@ void IKsolver::solve( VectorXd target){
 		updateJoints(deltaTheta);
 	
 	}
-	//cout << "targets\n" << target << endl << endl;
-	
-	//__updateS( );
 	return;
-	/*
-	VectorXd eNew = target - s;
-	
-	//cout << eNew << endl;
-
-	//Solution moved further away
-	if( e.norm() / eNew.norm() < 1.0 && (prevTarget - target).norm() > 0.01 ){
-		cout << "Went Further\n" ;
-		updateJoints(-deltaTheta);
-		lbd /= 2;
-		this->solve( target - e/2.0);
-		lbd *= 2;
-		//this->solve( target + e/2.0);
-	}
-	
-	prevTarget = target; */
 	 
 }
 

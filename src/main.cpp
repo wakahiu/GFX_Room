@@ -75,8 +75,8 @@ struct modelSel{
 };
 
 struct modelSel selectedJointSystem[MAX_JOINT_MODELS];
-VectorXd tPerson(15);
-VectorXd tPSCM(3);
+VectorXd tPerson;
+VectorXd tPSCM;
 
 bool IKmode = false;
 int  numModels = 0;
@@ -229,14 +229,19 @@ void init(void)
    
    	pscm->printHeirarchy();
    	person->printHeirarchy();
+   	/*
    	tPSCM(0) = 0.0;
    	tPSCM(1) = 0.0;
    	tPSCM(2) = 0.0;
    	for(int i = 0; i < 15 ; i++ ){
    		tPerson(i) = 0.1;
-   	}
+   	}*/
    	solverChain =  new IKsolver(pscm);
  	solverPerson =  new IKsolver(person);
+ 	
+ 	//Initialize target vectors to the current effector positions
+ 	tPSCM = solverChain->initTargs();
+ 	tPerson = solverPerson->initTargs();
  	
  	selectedJointSystem[0].solv = solverPerson;
  	selectedJointSystem[1].solv = solverChain;

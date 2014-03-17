@@ -17,6 +17,7 @@ public:
 	void IKupdateTargets( VectorXd e );
 	void updateJoints( VectorXd dTh );
 	int  getActiveEffId(void);
+	VectorXd initTargs(void);
 	
 private:
 
