@@ -5,6 +5,7 @@ Tree::Tree(RowVector3d v){
 	
 	numEff = 0;
 	numJoints = 0;
+	activeEff = NULL;
 }
 
 void Tree::incrementAngle(float dTh){
@@ -46,6 +47,11 @@ void Tree::addChild(	string parentName,string childName,
 	switch( type ){
 		case EFFECTOR:
 			child->effId = numEff++;
+			if(activeEff){
+				activeEff->type = INACTIVE;
+				
+			}
+			activeEff = child;
 			break;
 		case JOINT:
 			child->jointId = numJoints++;
@@ -53,6 +59,9 @@ void Tree::addChild(	string parentName,string childName,
 		case BOTH:
 			child->effId = numEff++;
 			child->jointId = numJoints++;
+			if(activeEff){
+				activeEff->type = INACTIVE;
+			}
 			break;
 	}
 	child->quat = new Quaterniond( q * (*pg) ) ;
@@ -98,10 +107,14 @@ void Tree::__draw(Node * n){
  	 * 3. Draw the line
  	 * 4. Reach the end position (translate again)
  	 */
+ 	 GLfloat otherColor[] = {0.3, 0.3, 0.3, 0.0};
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, otherColor);
+		
  	if(n->isAbs)
 		glTranslatef(n->posAbs->x(),n->posAbs->y(),n->posAbs->z());
-	else
+	else{
 		glTranslatef(n->posOffset->x(),n->posOffset->y(),n->posOffset->z());
+	}
 	
 	if( n->type == JOINT ) {
 		glutSolidSphere(0.4,20,20);
@@ -112,11 +125,24 @@ void Tree::__draw(Node * n){
 	
 	glTranslatef(0.0,n->length*0.5,0.0);
 	
-	if( (n->type == EFFECTOR) || (n->type == BOTH) ){
-		GLfloat effColor[] = {1.0, 0.0, 1.0, 0.0};
+	if( (n->type == BOTH) || (n->type == INACTIVE)){
+		GLfloat effColor[] = {0.0, 0.9, 1, 0.4};
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, effColor);
 		glColor3f(0.0,0.0,1.0);
-		glutSolidSphere(0.4,16,16);
+		if( !n->name.compare( "headEff") ){
+			glutSolidSphere(1.0,26,46);
+		}else{
+			glutSolidSphere(0.4,16,16);
+		}
+	}else if(  n->type == EFFECTOR ){
+		GLfloat effColor[] = {0.0, 1.0, .2, 0.4};
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, effColor);
+		glColor3f(0.0,0.0,1.0);
+		if( !n->name.compare( "headEff") ){
+			glutSolidSphere(1.0,26,46);
+		}else{
+			glutSolidSphere(0.4,16,16);
+		}
 	}
 	
 	

@@ -74,50 +74,50 @@ Tree * createPerson( float x, float y, float z ){
 		T->addChild( "back", "lPelvis", 
 				RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 				RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-				45.0, 1.00,
+				45.0, 1.50,
 				JOINT, false, false ); 
 	
 			T->addChild( "lPelvis", "lFemur", 
 					RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 					RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-					-45.0, 3.00,
+					-45.0, 4.00,
 					JOINT, false, false );
 					
 				T->addChild( "lFemur", "lTibia", 
 						RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 						RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-						0.0, 3.00,
+						0.0, 4.00,
 						JOINT, false, false );
 						
 					T->addChild( "lTibia", "lancle", 
 							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 							0.0, 0.00,
-							JOINT, false, false );
+							EFFECTOR, false, false );
 
 		T->addChild( "back", "rPelvis", 
 				RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 				RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-				-45.0, 1.00,
+				-45.0, 1.500,
 				JOINT, false, false ); 	
 	
 			T->addChild( "rPelvis", "rFemur", 
 					RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 					RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-					45.0, 3.00,
+					45.0, 4.00,
 					JOINT, false, false );
 					
 				T->addChild( "rFemur", "rTibia", 
 						RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 						RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-						0.0, 3.00,
+						0.0, 4.00,
 						JOINT, false, false );
 						
 					T->addChild( "rTibia", "rancle", 
 							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 							0.0, 0.00,
-							JOINT, false, false );
+							EFFECTOR, false, false );
 							
 	T->addChild( "root", "lHumerus", 
 				RowVector3d(1.0,0.0,0.0),						//Offset relative to parent
@@ -141,7 +141,7 @@ Tree * createPerson( float x, float y, float z ){
 							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 							0.0, 0.00,
-							JOINT, false, false );
+							EFFECTOR, false, false );
 	
 	T->addChild( "root", "rHumerus", 
 				RowVector3d(-1.0,0.0,0.0),						//Offset relative to parent
@@ -165,7 +165,7 @@ Tree * createPerson( float x, float y, float z ){
 							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 							0.0, 0.00,
-							JOINT, false, false );
+							EFFECTOR, false, false );
 																								
 	return T;
 }

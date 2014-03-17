@@ -13,8 +13,8 @@ class Node{
 private:
 	
 	string name;					//Unique string id.
-	RowVector3d * posAbs;				//Absolute position
-	RowVector3d * posOffset;			//Offset relative to parent
+	RowVector3d * posAbs;			//Absolute position
+	RowVector3d * posOffset;		//Offset relative to parent
 	RowVector3d * axisRot;			//Axis of Rotation
 	int effId;						//Effector id
 	int jointId;					//Joint id

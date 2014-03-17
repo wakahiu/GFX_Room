@@ -38,7 +38,7 @@ static void __printOpenGLError(string file, int line){
 #define RAD(x) x/180.000*M_PI
 #define DEG(x) x*180.000/M_PI
 
-enum nodeType {EFFECTOR, JOINT, BOTH};
+enum nodeType {EFFECTOR, JOINT, BOTH, INACTIVE};
 
 #define ROOMHEIGHT	30
 #define ROOMWIDTH 	25

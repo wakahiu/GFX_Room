@@ -16,7 +16,7 @@ public:
 	void updateJacobianPinvDLS(void);
 	void IKupdateTargets( VectorXd e );
 	void updateJoints( VectorXd dTh );
-	
+	int  getActiveEffId(void);
 	
 private:
 
