@@ -15,7 +15,7 @@ Tree * createPSCM( float x, float y, float z ){
 	
 	T->addChild( "child1", "child2", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
-			RowVector3d(1.0,0.0,1.0),						//Axis of rotation
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 			45.0, 3.0,
 			JOINT, false, false );	
 		
@@ -27,15 +27,10 @@ Tree * createPSCM( float x, float y, float z ){
 			
 	T->addChild( "child3", "child4", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
-			RowVector3d(1.0,0.0,0.0),						//Axis of rotation
+			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 			-90.0, 3.0,
 			JOINT, false, false );
 			
-	T->addChild( "child4", "child5", 
-			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
-			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-			40.0, 0.0,
-			JOINT, false, false );
 	
 	T->addChild( "child4", "eff1", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
@@ -52,93 +47,126 @@ Tree * createPerson( float x, float y, float z ){
 	//Create a rooted tree
 	Tree * T = new Tree( rootPos );
 	
-	T->addChild( "root", "child1", 
+	T->addChild( "root", "neck", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-			-45.0, 3.0,
+			0.0, 1.5,
 			JOINT, false, false );
 			
-	T->addChild( "child1", "child2", 
-			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
-			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-			90.0, 1.0,
-			JOINT, false, false );
+		T->addChild( "neck", "head", 
+				RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+				RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+				0.0, 1.5,
+				JOINT, false, false );
 	
-	T->addChild( "child2", "eff1", 
+			T->addChild( "head", "headEff", 
+					RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+					RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+					00.0, 0.0,
+					EFFECTOR, false, false );
+	
+	T->addChild( "root", "back", 
 			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
 			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
-			00.0, 0.0,
-			EFFECTOR, false, false );
+			180.0, 3.0,
+			JOINT, false, false ); 
 			
-	//Create a root Node.
-	//This is a "null" Node that represents a single point and is the 
-	//Animation center of the structure
-	/*
-	Node neck(	root , "neck", 
-				0.0,0.0,0.0,
-				0.0,0.0,0.0,
-				1.0);
-		
-		Node head(	neck , "head", 
-					0.0,0.0,0.0,
-					0.0,0.0,00.0,
-					0.5);
-							
-	Node back(	root , "back", 
-				0.0,0.0,0.0,
-				0.0,0.0,180.0,
-				2.5);
-				
-		Node rPelvis(	back , "rPelvis", 
-					0.0,0.0,0.0,
-					0.0,0.0,45.0,
-					0.8f);
-		
-			Node rFemur(	rPelvis , "rFemur", 
-						0.0,0.0,0.0,
-						0.0,0.0,-45.0,
-						2.5f);
-			
-				Node rTibia(	rFemur , "rTibia", 
-							0.0,0.0,0.0,
-							0.0,0.0,00.0,
-							2.5f);
+		T->addChild( "back", "lPelvis", 
+				RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+				RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+				45.0, 1.00,
+				JOINT, false, false ); 
+	
+			T->addChild( "lPelvis", "lFemur", 
+					RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+					RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+					-45.0, 3.00,
+					JOINT, false, false );
+					
+				T->addChild( "lFemur", "lTibia", 
+						RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+						RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+						0.0, 3.00,
+						JOINT, false, false );
 						
-		Node lPelvis(	back , "lPelvis", 
-					0.0,0.0,0.0,
-					0.0,0.0,-45.0,
-					0.8);
-			
-			Node lFemur(	lPelvis , "lFemur", 
-						0.0,0.0,0.0,
-						0.0,0.0,45.0,
-						2.5f);
-						
-				Node lTibia( lFemur , "lTibia", 
-						0.0,0.0,0.0,
-						0.0,0.0,00.0,
-						2.5f);
+					T->addChild( "lTibia", "lancle", 
+							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+							0.0, 0.00,
+							JOINT, false, false );
 
-	Node rHumerus(	root , "rHumerus", 
-				0.0,0.0,0.0,
-				0.0,0.0,120.0,
-				1.5);
-				
-		Node rUlna(	rHumerus  , "rUlna", 
-					0.0,0.0,0.0,
-					0.0,0.0,-60.0,
-					1.5);
-				
-	Node lHumerus(	root , "lHumerus", 
-				0.0,0.0,0.0,
-				0.0,0.0,-120.0,
-				1.5);
-		
-		Node lUlna(	lHumerus , "lUlna", 
-					0.0,0.0,0.0,
-					0.0,0.0,60.0,
-					1.5);
-					*/
+		T->addChild( "back", "rPelvis", 
+				RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+				RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+				-45.0, 1.00,
+				JOINT, false, false ); 	
+	
+			T->addChild( "rPelvis", "rFemur", 
+					RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+					RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+					45.0, 3.00,
+					JOINT, false, false );
+					
+				T->addChild( "rFemur", "rTibia", 
+						RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+						RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+						0.0, 3.00,
+						JOINT, false, false );
+						
+					T->addChild( "rTibia", "rancle", 
+							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+							0.0, 0.00,
+							JOINT, false, false );
+							
+	T->addChild( "root", "lHumerus", 
+				RowVector3d(1.0,0.0,0.0),						//Offset relative to parent
+				RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+				-135.0, 2.50,
+				JOINT, false, false ); 	
+	
+			T->addChild( "lHumerus", "lUlna", 
+					RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+					RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+					45.0, 2.5,
+					JOINT, false, false );
+					
+				T->addChild( "lUlna", "lWrist", 
+						RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+						RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+						0.0, 0.75,
+						JOINT, false, false );
+						
+					T->addChild( "lWrist", "lPalm", 
+							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+							0.0, 0.00,
+							JOINT, false, false );
+	
+	T->addChild( "root", "rHumerus", 
+				RowVector3d(0.0,0.0,1.0),						//Offset relative to parent
+				RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+				135.0, 2.50,
+				JOINT, false, false ); 	
+	
+			T->addChild( "rHumerus", "rUlna", 
+					RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+					RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+					-45.0, 2.5,
+					JOINT, false, false );
+					
+				T->addChild( "rUlna", "rWrist", 
+						RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+						RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+						0.0, 0.75,
+						JOINT, false, false );
+						
+					T->addChild( "rWrist", "rPalm", 
+							RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+							RowVector3d(0.0,0.0,1.0),						//Axis of rotation
+							0.0, 0.00,
+							JOINT, false, false );
+																								
 	return T;
 }
 

@@ -46,12 +46,9 @@ void Tree::addChild(	string parentName,string childName,
 	switch( type ){
 		case EFFECTOR:
 			child->effId = numEff++;
-			cout << child->effId << endl;
 			break;
 		case JOINT:
-			
 			child->jointId = numJoints++;
-			
 			break;
 		case BOTH:
 			child->effId = numEff++;
@@ -90,7 +87,6 @@ Node * Tree::__getNode(Node * n, string name){
 		
 void Tree::draw(void){
 	__draw(root);
-	cout << endl;
 }
 
 void Tree::__draw(Node * n){

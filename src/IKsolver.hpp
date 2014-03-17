@@ -17,6 +17,7 @@ public:
 	void IKupdateTargets( VectorXd e );
 	void updateJoints( VectorXd dTh );
 	
+	
 private:
 
 	void __updateS( void );
@@ -28,6 +29,7 @@ private:
 
 	VectorXd e;
 	VectorXd s;
+	VectorXd prevTarget;
 	
 	int rows;
 	int cols;

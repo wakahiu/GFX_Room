@@ -12,6 +12,7 @@ private:
 	int numEff;
 	int numJoints;
 	
+	
 	void __draw(Node * n);
 	void __printHeirarchy(Node  * n, int rank);
 	Node * __getNode(Node * n, string name);

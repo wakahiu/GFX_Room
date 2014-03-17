@@ -54,8 +54,8 @@ static GLuint textures[6];
 static GLuint roomTextures[10];
 bool captureScreen = false;
 static GLfloat PosX =0.0;
-static GLfloat PosY =0.0;
-static GLfloat PosZ =-ROOMWIDTH/2;
+static GLfloat PosY = -01.0 ;
+static GLfloat PosZ =-3.0*ROOMWIDTH/4.0;
 static GLScreenCapturer screenshot("screenshot-%d.ppm");
 char titleString[150];
 Tree * person;
@@ -213,8 +213,8 @@ void init(void)
    	/*
    	* Kinematic models
    	*/
-   	person = createPerson(0.0,0.0,0.0);
-   	pscm = createPSCM(0.0,-5.0,0.0);
+   	person = createPerson(-3.0,0.0,0.0);
+   	pscm = createPSCM(5.0,-5.0,0.0);
    	
     selectedJointSystem[0].tree = person;
     numModels++;
@@ -233,7 +233,7 @@ void init(void)
    	t(2) = 0.0;
    	
    	solverChain =  new IKsolver(pscm);
- 	solverPerson =  new IKsolver(person);
+ 	//solverPerson =  new IKsolver(person);
 }
 
 
@@ -258,7 +258,7 @@ void display(void)
 	
 		if(IKmode){
 			solverChain->solve( t );
-			solverPerson->solve( t );
+			//solverPerson->solve( t );
 		}
 	
 	   //Turn on Texturing
@@ -267,7 +267,7 @@ void display(void)
 	   glTexEnvf(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 	   
 	   //The Room using display lists
-	   //glCallList(theRoom);
+	   glCallList(theRoom);
 	   
 	   // Retrieve current matrice before they popped.
 		glGetDoublev( GL_MODELVIEW_MATRIX, modelview );        // Retrieve The Modelview Matrix
@@ -460,7 +460,15 @@ void keyboard( unsigned char key, int x, int y )
    	case 'r':
         captureScreen = !captureScreen; 
         break;
-       
+     
+     case 'u':
+        lbd/=10.0;
+        cout << lbd << endl;
+        break;
+     case 'v':
+        lbd*=10.0; 
+        cout << lbd << endl;
+        break;  
      
 	//Selects the model
     case '1':

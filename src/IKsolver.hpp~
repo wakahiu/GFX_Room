@@ -17,9 +17,10 @@ public:
 	void IKupdateTargets( VectorXd e );
 	void updateJoints( VectorXd dTh );
 	
+	
 private:
 
-	void __updateS( void )
+	void __updateS( void );
 	
 	Tree * T;
 	MatrixXd J;
@@ -28,6 +29,7 @@ private:
 
 	VectorXd e;
 	VectorXd s;
+	VectorXd prevTarget;
 	
 	int rows;
 	int cols;

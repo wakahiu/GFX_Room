@@ -44,6 +44,7 @@ enum nodeType {EFFECTOR, JOINT, BOTH};
 #define ROOMWIDTH 	25
 #define ROOMLENGTH	35
 #define LAMBDA 1e-4f
+static float lbd = 0.0001;
 
 #define X .525731112119133606 * 5
 #define Z .850650808352039932 * 5

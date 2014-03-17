@@ -2,13 +2,57 @@
 
 IKsolver::IKsolver(Tree * T): T(T){
 	J.resize(3*(T->numEff), T->numJoints);
-	Jpinv.resize(T->numJoints, 3*(T->numEff) );
 	J.setZero();
+	//cout << endl << J  << endl; 
+	
+	Jpinv.resize(T->numJoints, 3*(T->numEff) );
 	Jpinv.setZero();
 	e.resize( 3*(T->numEff) );
 	e.setZero();
 	s.resize( 3*(T->numEff) );
 	__updateS( );
+	prevTarget.resize(3*(T->numEff));
+	prevTarget.setZero();
+}
+
+void IKsolver::solve( VectorXd target){
+	
+	//if( (target - prevTarget).norm() > 0.0001  ){
+	//cout << "Moved " <<  endl;
+	updateJacobian();
+	updateJacobianPinvDLS();
+	__updateS( );
+	e = target - s;
+	
+	VectorXd deltaTheta = Jpinv * e;
+	
+	/*
+	//Clamp the delta thetas
+	float MAX_DTH = M_PI*0.001;
+	for(int i = 0; i < deltaTheta.size(); i++){
+		deltaTheta(i) = deltaTheta(i) > MAX_DTH ? MAX_DTH : deltaTheta(i);
+	}*/
+	
+	updateJoints(deltaTheta);
+	
+	__updateS( );
+	VectorXd eNew = target - s;
+	
+	cout << eNew << endl;
+
+	if( e.norm() / eNew.norm() < 1.0 ){
+		cout << "Went Further\n" ;
+		updateJoints(-deltaTheta);
+		lbd *= 2;
+		this->solve( target - e/2.0);
+		lbd /= 2;
+		//this->solve( target + e/2.0);
+	}
+		
+		
+	//}
+	prevTarget = target;
+	 
 }
 
 void IKsolver::__updateS( void ){
@@ -36,16 +80,7 @@ void IKsolver::__updateS( void ){
 	}
 }
 
-void IKsolver::solve( VectorXd target){
-	updateJacobian();
-	updateJacobianPinvDLS();
-	__updateS( );
-	e = target - s ;
-	VectorXd ePrev = e;
-	VectorXd deltaTheta = Jpinv * e;
-	updateJoints(deltaTheta);
-	 
-}
+
 
 void IKsolver::updateJoints( VectorXd dTh ){
 	//DFS traversal of the tree to get update the joint angles.
@@ -114,15 +149,15 @@ void IKsolver::updateJoints( VectorXd dTh ){
 void IKsolver::updateJacobianPinvDLS(void){
 	//cout << "----- J -----" << endl;
 	//cout << J << endl;
-	//cout << "----- Jtr -----" << endl;
+	cout << "----- Jtr -----" << endl;
 	MatrixXd Jtr = J.transpose();
-	//cout << Jtr << endl;
-	//cout << "----- J_x_Jtr -----" << endl;
-	MatrixXd J_x_Jtr = J*Jtr + MatrixXd::Identity(3*(T->numEff) , 3*(T->numEff) ) * LAMBDA * LAMBDA;
-	//cout << J_x_Jtr << endl << endl;
-	//cout << "----- Jpinv -----" << endl;
+	cout << Jtr << endl;
+	cout << "----- J_x_Jtr -----" << endl;
+	MatrixXd J_x_Jtr = J*Jtr + MatrixXd::Identity(3*(T->numEff) , 3*(T->numEff) ) * lbd* lbd;
+	cout << J_x_Jtr << endl << endl;
+	cout << "----- Jpinv -----" << endl;
 	Jpinv = Jtr*J_x_Jtr.inverse();
-	//cout << Jpinv <<endl;
+	cout << Jpinv <<endl;
 }
 
 void IKsolver::updateJacobian(void){
@@ -172,4 +207,5 @@ void IKsolver::updateJacobian(void){
 			seqTree.push( curr->node );
 		}
 	}
+	cout << "Done updating Jacobian\n" << J << endl;
 }
