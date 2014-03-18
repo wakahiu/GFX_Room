@@ -501,14 +501,14 @@ void keyboard( unsigned char key, int x, int y )
     case '+':
     case '=':
     	if( !IKmode ){
-        	selectedJointSystem[selectedModel].tree->incrementAngle(3.0);
+        	selectedJointSystem[selectedModel].tree->incrementAngle(6.0);
         	glutPostRedisplay();
         }
         break;
     case '-':
     case '_':
     	if( !IKmode ){
-        	selectedJointSystem[selectedModel].tree->incrementAngle(-3.0);
+        	selectedJointSystem[selectedModel].tree->incrementAngle(-6.0);
         	glutPostRedisplay();
         }
         break;
@@ -550,31 +550,28 @@ void mouse( int button, int state, int x, int y)
     winY = (float)viewport[3] - (float)y;
     glReadPixels( x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
     gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
+    Tree * tr = selectedJointSystem[selectedModel].tree;
     
     //Start updating target positions in Inv Kinematics mode
     if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
        //Left click in FK mode chooses the joint to rotate at.
        if( !IKmode ){
-       		Tree * tr = selectedJointSystem[selectedModel].tree;
-       		if( tr->selectJoint(posX,posY,posX) )
-       			cout << "clicked at " << "x,y" << posX << " " << posY<< endl;
-       		else
-       			cout << "Nothing was clicked on " << endl;
+       		tr->selectJoint(posX,posY,posX);
         }   
 	}
         
     if( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN ){
-    	rightClicked = true;
        //Left click in FK mode chooses the joint to rotate at.
        if( IKmode ){
-       		cout << "Right click at " << x << " " << y << endl;
-        	processSelection(x, y);
+       		if( tr->selectEffector(posX,posY,posX) ){
+       			cout << "clicked at " << "x,y" << posX << " " << posY<< endl;
+       		}else{
+       			cout << "Nothing was clicked on " << endl;
+       		}
         } 
 	}
-    //Stop updating target positions in Inv  Kinematics mode
     if(button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
     {
-    	rightClicked = false;
         glutPostRedisplay();
     }
     

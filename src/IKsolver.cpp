@@ -99,8 +99,8 @@ int IKsolver::getActiveEffId(void){
 }
 
 void IKsolver::updateJacobianPinvDLS(void){
-	//cout << "----- J -----" << endl;
-	//cout << J << endl;
+	cout << "----- J -----" << endl;
+	cout << J << endl;
 	//cout << "----- Jtr -----" << endl;
 	MatrixXd Jtr = J.transpose();
 	//cout << Jtr << endl;
@@ -153,6 +153,20 @@ void IKsolver::updateJacobian(void){
 				
 			}
 			
+		}else if( node->getType() == INACTIVE ){
+			row = 3*(node->effId);
+			//Get all ancesotors - joints that affect joint node n.
+			for( Node * ancestor = node->parent; ancestor && ancestor->parent ; ancestor = ancestor->parent){
+				/*
+				* Set these to zero
+				*/			
+				col = ancestor->jointId;
+				
+				J(row,col) = 0;
+				J(row+1, col) = 0;
+				J(row+2, col) = 0;
+				
+			}
 		}
 		
 		for( struct nodeLink * curr = node->children; curr; curr = curr->next){

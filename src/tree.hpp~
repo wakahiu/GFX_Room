@@ -23,6 +23,7 @@ private:
 	
 public:
 	bool selectJoint(float px, float py, float pz);
+	bool selectJoint(float px, float py, float pz);
 	void incrementAngle(float dTh);
 	Tree(RowVector3d v);
 	void printHeirarchy(void);
@@ -33,7 +34,7 @@ public:
 					double theta, float length,
 					nodeType type, bool isAbs, bool frozen );
 	
-	//
+	selectEffector
 	Node * getRoot(void){ return root; }
 };
 #endif	

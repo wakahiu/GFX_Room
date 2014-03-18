@@ -29,6 +29,36 @@ void Tree::incrementAngle(float dTh){
 	
 }
 
+bool Tree::selectEffector(float px, float py, float pz){
+	stack<Node *> seqTree;
+	seqTree.push( root );
+	RowVector3d currPos(px,py,0);
+	
+	//cout << "Looking for " << currPos << endl;
+
+	while(!seqTree.empty()){
+		Node * node = seqTree.top();
+		seqTree.pop(); 
+		
+		if(node->getType() == EFFECTOR || node->getType() == BOTH || node->getType() == INACTIVE){
+				RowVector3d * Si = node->posAbs;
+				RowVector3d * off = node->posOffset;
+				//cout << *Si << endl;
+				if( (currPos - (*Si + *off)).norm()  < 0.5 ){
+					activeEff->type = INACTIVE;
+					activeEff = node;
+					activeEff->type = EFFECTOR;
+					return true;
+				}
+			}
+
+		for( struct nodeLink * curr = node->children; curr; curr = curr->next){
+			seqTree.push( curr->node );
+		}
+	}
+	return false;
+}
+
 bool Tree::selectJoint(float px, float py, float pz){
 	stack<Node *> seqTree;
 	seqTree.push( root );
