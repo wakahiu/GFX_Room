@@ -27,6 +27,7 @@ public:
 	Tree(RowVector3d v);
 	void printHeirarchy(void);
 	void draw(void);
+	void updateJoints( VectorXd dTh );
 	void addChild( 	string parentName,string childName, 
 					RowVector3d posOffset, RowVector3d axisRot,
 					double theta, float length,

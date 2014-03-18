@@ -15,7 +15,6 @@ public:
 	void solve( VectorXd target );
 	void updateJacobianPinvDLS(void);
 	void IKupdateTargets( VectorXd e );
-	void updateJoints( VectorXd dTh );
 	int  getActiveEffId(void);
 	VectorXd initTargs(void);
 	

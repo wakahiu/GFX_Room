@@ -501,14 +501,14 @@ void keyboard( unsigned char key, int x, int y )
     case '+':
     case '=':
     	if( !IKmode ){
-        	selectedJointSystem[selectedModel].tree->incrementAngle(3.0);
+        	selectedJointSystem[selectedModel].tree->incrementAngle(6.0);
         	glutPostRedisplay();
         }
         break;
     case '-':
     case '_':
     	if( !IKmode ){
-        	selectedJointSystem[selectedModel].tree->incrementAngle(-3.0);
+        	selectedJointSystem[selectedModel].tree->incrementAngle(-6.0);
         	glutPostRedisplay();
         }
         break;

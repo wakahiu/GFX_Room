@@ -10,12 +10,23 @@ Tree::Tree(RowVector3d v){
 }
 
 void Tree::incrementAngle(float dTh){
+
+	Node * jnt; 
 	if( !activeJoint ){
+		return;
 		activeJoint = root;
-		root->theta+=dTh;
+		jnt = root;
 	}else{
-		activeJoint->theta+=dTh;
+		jnt =  activeJoint;;
 	}
+	
+	VectorXd Vdth(numJoints);
+	Vdth.setZero();
+	//cout << "JoinID " << jnt->jointId << endl;
+	Vdth(jnt->jointId) += RAD(dTh);
+	//cout << Vdth << endl << endl;
+	updateJoints(Vdth);
+	
 }
 
 bool Tree::selectJoint(float px, float py, float pz){
@@ -180,6 +191,7 @@ void Tree::__draw(Node * n){
 		}
 	}
 	
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, otherColor);
 	glRotatef(n->theta,n->axisRot->x(),n->axisRot->y(),n->axisRot->z());
 	glTranslatef(0.0,n->length*0.5,0.0);
 	glPushMatrix();
@@ -200,6 +212,70 @@ void Tree::__draw(Node * n){
 	glPopMatrix();
 	
 }	
+
+void Tree::updateJoints( VectorXd dTh ){
+	//DFS traversal of the tree to get update the joint angles.
+	stack<Node *> seqTree;
+	seqTree.push( root );
+
+	//Update the angles th += dth
+	while(!seqTree.empty()){
+		Node * node = seqTree.top();
+		seqTree.pop(); 
+		
+		for( struct nodeLink * curr = node->children; curr; curr = curr->next){
+			seqTree.push( curr->node );
+		}
+		
+		if( node->parent && (node->getType() == JOINT  || node->getType() == BOTH) ){
+			
+				int idx = (node->jointId);
+				//cout << idx;
+				double phi = DEG( dTh( idx ) );
+				node->theta += phi;
+		}
+	}
+
+	//Angles updated.
+	//Now we follow the tree structure from the root updating the absolute positions
+	seqTree.push( root );
+	while(!seqTree.empty()){
+	
+		Node * node = seqTree.top();
+		seqTree.pop();
+		
+		for( struct nodeLink * curr = node->children; curr; curr = curr->next){
+			seqTree.push( curr->node );
+		}
+		
+		if( node->parent == NULL){
+			continue;
+		}
+		
+		Node * pr = node->parent;
+		//Update the positions of joints
+		double s = sin(RAD( node->parent->theta/2.0 ) );
+		double c = cos(RAD( node->parent->theta/2.0 ) );
+		double px = node->parent->axisRot->x();
+		double py = node->parent->axisRot->y();
+		double pz = node->parent->axisRot->z();
+		
+		Quaterniond * pg = node->parent->quat;
+		Quaterniond q( c , s*px , s*py, s* pz );
+		Quaterniond p( 0, 0, node->parent->length, 0 );
+		
+		//Quaternion rotations are p*q*pinv
+		Quaterniond rot_p( q * (*pg) * p * pg->inverse() * q.inverse()  );
+		
+		//cout << "Position " << rot_p.x() << endl;
+		node->posAbs->x() = rot_p.x() + pr->posAbs->x() + pr->posOffset->x();
+		node->posAbs->y() = rot_p.y() + pr->posAbs->y() + pr->posOffset->y();
+		node->posAbs->z() = rot_p.z() + pr->posAbs->z() + pr->posOffset->z();
+		
+		node->quat = new Quaterniond( q * (*pg) ) ;
+	
+	}	
+}
 
 void Tree::printHeirarchy(void){
 	cout << "-- printing tree --" << endl;
