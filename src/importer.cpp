@@ -48,7 +48,7 @@ Tree * createPerson( float x, float y, float z ){
 	Tree * T = new Tree( rootPos );
 	
 	T->addChild( "root", "neck", 
-			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,0.7,0.0),						//Offset relative to parent
 			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 			0.0, 1.5,
 			JOINT, false, false );
@@ -66,7 +66,7 @@ Tree * createPerson( float x, float y, float z ){
 					EFFECTOR, false, false );
 	
 	T->addChild( "root", "back", 
-			RowVector3d(0.0,0.0,0.0),						//Offset relative to parent
+			RowVector3d(0.0,-0.7,0.0),						//Offset relative to parent
 			RowVector3d(0.0,0.0,1.0),						//Axis of rotation
 			180.0, 3.0,
 			JOINT, false, false ); 

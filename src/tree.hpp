@@ -13,6 +13,7 @@ private:
 	int numJoints;
 	
 	Node * activeEff;
+	Node * activeJoint;
 	
 	void __draw(Node * n);
 	void __printHeirarchy(Node  * n, int rank);
@@ -21,6 +22,7 @@ private:
 	
 	
 public:
+	bool selectJoint(float px, float py, float pz);
 	void incrementAngle(float dTh);
 	Tree(RowVector3d v);
 	void printHeirarchy(void);

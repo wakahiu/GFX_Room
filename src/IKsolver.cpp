@@ -33,7 +33,10 @@ VectorXd IKsolver::initTargs(void){
 		
 		if( (node->getType() == INACTIVE || node->getType() == EFFECTOR  || node->getType() == BOTH) ){
 			
-				Targs( 3*node->effId + 0 ) = 0.0;
+			RowVector3d * Si = node->posAbs;
+				Targs( 3*node->effId + 0 ) = Si->x();
+				Targs( 3*node->effId + 1 ) = Si->y();
+				Targs( 3*node->effId + 2 ) = Si->z();
 		}
 	}
 	return Targs;
@@ -59,16 +62,9 @@ void IKsolver::solve( VectorXd target){
 	GLfloat otherColor[] = {0.3, 0.3, 0.3, 0.0};
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, otherColor);
 	
-	if(e.norm() > 1.0 ){
-		this->solve( target - e* 00.1);
-	}else{
+	VectorXd deltaTheta = Jpinv * e;
 	
-		//cout << "Solver " << endl;
-		VectorXd deltaTheta = Jpinv * e;
-	
-		updateJoints(deltaTheta);
-	
-	}
+	updateJoints(deltaTheta);
 	return;
 	 
 }

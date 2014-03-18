@@ -6,11 +6,48 @@ Tree::Tree(RowVector3d v){
 	numEff = 0;
 	numJoints = 0;
 	activeEff = NULL;
+	activeJoint = NULL;
 }
 
 void Tree::incrementAngle(float dTh){
-	root->theta+=dTh;
+	if( !activeJoint ){
+		activeJoint = root;
+		root->theta+=dTh;
+	}else{
+		activeJoint->theta+=dTh;
+	}
 }
+
+bool Tree::selectJoint(float px, float py, float pz){
+	stack<Node *> seqTree;
+	seqTree.push( root );
+	RowVector3d currPos(px,py,0);
+	
+	//cout << "Looking for " << currPos << endl;
+
+	while(!seqTree.empty()){
+		Node * node = seqTree.top();
+		seqTree.pop(); 
+		
+		if(node->getType() == JOINT || node->getType() == BOTH){
+				RowVector3d * Si = node->posAbs;
+				RowVector3d * off = node->posOffset;
+				//cout << *Si << endl;
+				if( (currPos - (*Si + *off)).norm()  < 0.5 ){
+					activeJoint = node;
+					activeJoint->isActiveJoint = false;
+					node->isActiveJoint = true;
+					return true;
+				}
+			}
+
+		for( struct nodeLink * curr = node->children; curr; curr = curr->next){
+			seqTree.push( curr->node );
+		}
+	}
+	return false;
+}
+
 void Tree::addChild(	string parentName,string childName, 
 				RowVector3d posOffset, RowVector3d axisRot,
 				double theta, float length,
@@ -117,18 +154,17 @@ void Tree::__draw(Node * n){
 	}
 	
 	if( n->type == JOINT ) {
-		glutSolidSphere(0.4,20,20);
+		if( n->isActiveJoint ){
+			GLfloat effColor[] = {0.9, 0.9, 0, 0.0};
+			glMaterialfv(GL_FRONT, GL_DIFFUSE, effColor);
+			glutSolidSphere(0.4,26,46);
+		}else{
+			glutSolidSphere(0.4,20,20);
+		}
 	}
-	
-	glRotatef(n->theta,n->axisRot->x(),n->axisRot->y(),n->axisRot->z());
-	
-	
-	glTranslatef(0.0,n->length*0.5,0.0);
-	
-	if( (n->type == BOTH) || (n->type == INACTIVE)){
+	else if( (n->type == BOTH) || (n->type == INACTIVE)){
 		GLfloat effColor[] = {0.0, 0.9, 1, 0.4};
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, effColor);
-		glColor3f(0.0,0.0,1.0);
 		if( !n->name.compare( "headEff") ){
 			glutSolidSphere(1.0,26,46);
 		}else{
@@ -137,7 +173,6 @@ void Tree::__draw(Node * n){
 	}else if(  n->type == EFFECTOR ){
 		GLfloat effColor[] = {0.0, 1.0, .2, 0.4};
 		glMaterialfv(GL_FRONT, GL_DIFFUSE, effColor);
-		glColor3f(0.0,0.0,1.0);
 		if( !n->name.compare( "headEff") ){
 			glutSolidSphere(1.0,26,46);
 		}else{
@@ -145,7 +180,9 @@ void Tree::__draw(Node * n){
 		}
 	}
 	
-	
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, otherColor);
+	glRotatef(n->theta,n->axisRot->x(),n->axisRot->y(),n->axisRot->z());
+	glTranslatef(0.0,n->length*0.5,0.0);
 	glPushMatrix();
 	glScalef(1.0,n->length*4.5,1.0);
 	glutSolidCube(0.2);

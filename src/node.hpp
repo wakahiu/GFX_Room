@@ -25,6 +25,7 @@ private:
 	struct nodeLink * children;		//Children linked list
 	Node * parent;					//Parent		
 	bool frozen;					//Frozen or active
+	bool isActiveJoint;
 	Quaterniond * quat;				//All the rotations that have happened to ancesotors
 	
 public:

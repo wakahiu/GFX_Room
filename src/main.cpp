@@ -80,10 +80,12 @@ VectorXd tPSCM;
 
 bool IKmode = false;
 int  numModels = 0;
+bool rightClicked = false;
 
 
 void drawSelectableObjects( void )
 {
+	int name = 0;
     float currentColor[4];
     glGetFloatv(GL_CURRENT_COLOR, currentColor);
     
@@ -92,7 +94,7 @@ void drawSelectableObjects( void )
 
     // Initialize the name stack
     glInitNames();
-    glPushName(0);
+    glPushName(name);
     
     /* save the current transformation state */
     glPushMatrix();
@@ -341,7 +343,7 @@ void reshape (int w, int h)
    													//Only the matrix specified in the following has effect
    	
    	//gluOrtho2D(-50,50,-50,50);							
-   gluPerspective(60.0, (GLfloat)w/GLfloat(h),10.0,100.0);	//Perspective projection
+   gluPerspective(60.0, (GLfloat)w/GLfloat(h),1.0,100.0);	//Perspective projection
    
    glMatrixMode (GL_MODELVIEW);						//Succeeding transforms now affect the model view matrix 
    						glFlush ();							//Instead of the projection matrix.
@@ -384,7 +386,7 @@ void processSelection(int xPos, int yPos)
         
         // Apply perspective matrix 
         fAspect = (float)viewport[2] / (float)viewport[3];
-        gluPerspective(45.0f, fAspect, 1.0, 425.0);
+        gluPerspective(60.0f, fAspect, 1.0, 100.0);
         
         //Enter selection mode and redraw objects on screen
         // Render only those needed for selection
@@ -540,11 +542,41 @@ void keyboard( unsigned char key, int x, int y )
 void mouse( int button, int state, int x, int y)
 {
     tbMouse(button, state, x, y);
+
+    GLfloat winX, winY, winZ;
+    GLdouble posX, posY, posZ;
+    
+    winX = (float)x;
+    winY = (float)viewport[3] - (float)y;
+    glReadPixels( x, (int)winY, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
+    gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
     
     //Start updating target positions in Inv Kinematics mode
-    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
-        if( !IKmode )
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN){
+       //Left click in FK mode chooses the joint to rotate at.
+       if( !IKmode ){
+       		Tree * tr = selectedJointSystem[selectedModel].tree;
+       		if( tr->selectJoint(posX,posY,posX) )
+       			cout << "clicked at " << "x,y" << posX << " " << posY<< endl;
+       		else
+       			cout << "Nothing was clicked on " << endl;
+        }   
+	}
+        
+    if( button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN ){
+    	rightClicked = true;
+       //Left click in FK mode chooses the joint to rotate at.
+       if( IKmode ){
+       		cout << "Right click at " << x << " " << y << endl;
         	processSelection(x, y);
+        } 
+	}
+    //Stop updating target positions in Inv  Kinematics mode
+    if(button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
+    {
+    	rightClicked = false;
+        glutPostRedisplay();
+    }
     
     //Stop updating target positions in Inv  Kinematics mode
     if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
@@ -582,7 +614,7 @@ void motion(int x, int y)
     	(*selectedJointSystem[selectedModel].targets)(3*k+1) = posY;
     	(*selectedJointSystem[selectedModel].targets)(3*k+2) = 0;
     	
-    	cout  << endl << " pos x " << posX << " y " << posY << " z "<< posZ << endl;
+    	//cout  << endl << " pos x " << posX << " y " << posY << " z "<< posZ << endl;
     }
     
     glutPostRedisplay();

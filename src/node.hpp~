@@ -13,8 +13,8 @@ class Node{
 private:
 	
 	string name;					//Unique string id.
-	RowVector3d * posAbs;				//Absolute position
-	RowVector3d * posOffset;			//Offset relative to parent
+	RowVector3d * posAbs;			//Absolute position
+	RowVector3d * posOffset;		//Offset relative to parent
 	RowVector3d * axisRot;			//Axis of Rotation
 	int effId;						//Effector id
 	int jointId;					//Joint id
@@ -25,6 +25,7 @@ private:
 	struct nodeLink * children;		//Children linked list
 	Node * parent;					//Parent		
 	bool frozen;					//Frozen or active
+	bool isActiveJointl
 	Quaterniond * quat;				//All the rotations that have happened to ancesotors
 	
 public:

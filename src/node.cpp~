@@ -20,7 +20,8 @@ Node::Node(	Node &parent,string name,
 	jointId(-1),
 	type(type),
 	isAbs(isAbs),
-	frozen(frozen){
+	frozen(frozen),
+	isActiveJoint(false){
 	
 }
 
@@ -32,7 +33,7 @@ Node::Node( const RowVector3d v ):
 	
 	posAbs( new RowVector3d(v)),
 	posOffset( new RowVector3d(0.0,0.0,0.0) ),
-	axisRot( (new RowVector3d(0.0,0.0,0.0)) ),
+	axisRot( (new RowVector3d(0.0,0.0,1.0)) ),
 	
 	quat( new Quaterniond( 1.0,0.0,0.0,0.0 )),
 	children(NULL),
@@ -40,7 +41,8 @@ Node::Node( const RowVector3d v ):
 	jointId(-1),
 	type(JOINT),
 	isAbs(true),
-	frozen(false){
+	frozen(false),
+	isActiveJoint(true){
 }
 
 Node::Node(const Node &other)
@@ -59,7 +61,8 @@ Node::Node(const Node &other)
 	type(other.type),
 	isAbs(other.isAbs),
 	frozen(other.frozen),
-	children(NULL){
+	children(NULL),
+	isActiveJoint(false){
 }
 
 void Node::addChild(Node * child){
