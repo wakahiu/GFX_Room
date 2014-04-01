@@ -5,18 +5,19 @@ RUN
 Type "make" IN Projects/src directory
 
 THE MODEL
-This project models a furnitureless room with animated objects in it. There is a planar serial chain manipulator and a humanoid.
+This project models a furnitureless room with animated objects in it. There is a planar serial chain manipulator and a humanoid with end effectors at the hands, feet and head.
 
 ANIMATIONS
-Solutions to the animation problem are found by the least squares problem. I used the Dampled leasts squares with dynamically varrying lambda parameter.
+Solutions to the animation problem are found by the least squares problem. I used the Dampled leasts squares with a static lambda parameter.
 
 
 USER INTERACTION
 Animations, motion and screen capture are enabled by pressing/toggling the folllowing keys.
 
-	drag mouse in inverse kinematics mode to move effectors (light green)
 	1,2,3 Selects the models
-	esc	= Exit
+	drag mouse - in inverse kinematics mode to move effectors (light green)
+	right click - When in inverse Kinematics selects the end effector
+	left click - when in Forward Kinematics mode selects the joint to rotate about
 	space = toggle Inverse an Forward kinematics.
 	+/-	= Rotate selected object in Forward Kinmatics mode.
    	r	= (toggle) Screen capture.
@@ -24,5 +25,6 @@ Animations, motion and screen capture are enabled by pressing/toggling the folll
 	s	= Move Backward
 	d	= Move right
 	a	= Move left
+	esc	= Exit
 	
 	

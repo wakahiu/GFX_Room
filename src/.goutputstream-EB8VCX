@@ -231,7 +231,6 @@ void init(void)
    
    	pscm->printHeirarchy();
    	person->printHeirarchy();
-
    	solverChain =  new IKsolver(pscm);
  	solverPerson =  new IKsolver(person);
  	
@@ -622,7 +621,7 @@ int main(int argc, char** argv)
    glutInitDisplayMode (GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
    glutInitWindowSize (900, 700); 
    glutInitWindowPosition (200, 100);
-   glutCreateWindow ( "GFX PA 3" );
+   glutCreateWindow (argv[0]);
    
    assert(!glewInit());
    init ();

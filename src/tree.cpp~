@@ -47,7 +47,7 @@ bool Tree::selectEffector(float px, float py, float pz){
 				if( (currPos - (*Si + *off)).norm()  < 0.5 ){
 					activeEff->type = INACTIVE;
 					activeEff = node;
-					activeEff->type = INACTIVE;
+					activeEff->type = EFFECTOR;
 					return true;
 				}
 			}
@@ -75,8 +75,9 @@ bool Tree::selectJoint(float px, float py, float pz){
 				RowVector3d * off = node->posOffset;
 				//cout << *Si << endl;
 				if( (currPos - (*Si + *off)).norm()  < 0.5 ){
-					activeJoint = node;
+					if(activeJoint)
 					activeJoint->isActiveJoint = false;
+					activeJoint = node;
 					node->isActiveJoint = true;
 					return true;
 				}

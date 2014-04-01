@@ -231,13 +231,7 @@ void init(void)
    
    	pscm->printHeirarchy();
    	person->printHeirarchy();
-   	/*
-   	tPSCM(0) = 0.0;
-   	tPSCM(1) = 0.0;
-   	tPSCM(2) = 0.0;
-   	for(int i = 0; i < 15 ; i++ ){
-   		tPerson(i) = 0.1;
-   	}*/
+
    	solverChain =  new IKsolver(pscm);
  	solverPerson =  new IKsolver(person);
  	
@@ -249,6 +243,8 @@ void init(void)
  	selectedJointSystem[1].solv = solverChain;
  	selectedJointSystem[0].targets = &tPerson;
  	selectedJointSystem[1].targets = &tPSCM;
+ 	
+ 	//Set up shaders
 }
 
 
@@ -628,7 +624,7 @@ int main(int argc, char** argv)
    glutInitDisplayMode (GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
    glutInitWindowSize (900, 700); 
    glutInitWindowPosition (200, 100);
-   glutCreateWindow (argv[0]);
+   glutCreateWindow ( "GFX PA 3" );
    
    assert(!glewInit());
    init ();

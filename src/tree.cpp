@@ -75,8 +75,9 @@ bool Tree::selectJoint(float px, float py, float pz){
 				RowVector3d * off = node->posOffset;
 				//cout << *Si << endl;
 				if( (currPos - (*Si + *off)).norm()  < 0.5 ){
+					if(activeJoint)
+						activeJoint->isActiveJoint = false;
 					activeJoint = node;
-					activeJoint->isActiveJoint = false;
 					node->isActiveJoint = true;
 					return true;
 				}
